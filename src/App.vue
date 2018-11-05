@@ -1,29 +1,46 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <vue-progress-bar></vue-progress-bar>
+    <router-view></router-view>
   </div>
 </template>
 
+<script>
+export default {
+  name: 'app',
+  created() {
+    //  hook the progress bar to start before we move router-view
+    this.$router.beforeEach((to, from, next) => {
+      //  does the page we want to go to have a meta.progress object
+      if (to.meta.progress !== undefined) {
+        const meta = to.meta.progress;
+        // parse meta tags
+        this.$Progress.parseMeta(meta);
+      }
+      //  start the progress bar
+      this.$Progress.start();
+      //  continue to next page
+      next();
+    });
+    //  hook the progress bar to finish after we've finished moving router-view
+    this.$router.afterEach(() => {
+      //  finish the progress bar
+      this.$Progress.finish();
+    });
+  },
+};
+</script>
+
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+// Layout Styles
+.page-section {
+  padding: 24px 48px;
 }
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+
+.vibrant-canvas {
+  position: fixed;
+  top: -10000px;
+  left: -10000px;
+  z-index: -1;
 }
 </style>
