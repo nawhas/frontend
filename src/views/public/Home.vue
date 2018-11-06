@@ -6,7 +6,7 @@
       </hero-quote>
     </hero-banner>
     <section class="page-section" id="top-reciters-section">
-      <h5>Top Reciters</h5>
+      <h5 class="title">Top Reciters</h5>
       <v-container grid-list-lg class="pa-0" fluid>
         <v-layout row wrap>
           <v-flex xs12 sm6 md4 v-for="reciter in reciters" :key="reciter.id">
@@ -16,7 +16,7 @@
       </v-container>
     </section>
     <section class="page-section" id="trending-nawhas">
-      <h5>Trending Nawhas</h5>
+      <h5 class="title">Trending Nawhas</h5>
       <v-container grid-list-lg class="pa-0" fluid>
         <v-layout row wrap>
           <v-flex xs12 sm6 md4 v-for="track in tracks" v-bind:key="track.id">
@@ -71,5 +71,8 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="scss" scoped>
+.title {
+  margin-bottom: 12px;
+}
 </style>

@@ -1,17 +1,20 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import 'vuetify/src/stylus/app.styl';
+import colors from 'vuetify/es5/util/colors';
 
 Vue.use(Vuetify, {
   theme: {
-    primary: '#ee44aa',
-    secondary: '#424242',
-    accent: '#82B1FF',
-    error: '#FF5252',
-    info: '#2196F3',
-    success: '#4CAF50',
-    warning: '#FFC107'
+    primary: colors.red.base,
+    secondary: colors.grey.darken2,
+    accent: colors.orange.accent3,
+    error: colors.red.accent4,
+    info: colors.blue.lighten1,
+    success: colors.green.lighten2,
+    warning: colors.amber.darken2,
   },
-  customProperties: true,
-  iconfont: 'md',
+  options: {
+    customProperties: true,
+    iconfont: 'md',
+  }
 });

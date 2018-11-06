@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import PublicLayout from '@/layouts/Public.vue';
+import PublicLayout from '@/layouts/PublicVuetify.vue';
 import Home from '@/views/public/Home.vue';
 
 Vue.use(Router);

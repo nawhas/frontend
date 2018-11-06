@@ -1,5 +1,5 @@
 <template>
-  <div class="hero" v-bind:style="style">
+  <div :class="['hero', 'hero--' + $vuetify.breakpoint.name]" v-bind:style="style">
     <div class="hero__content">
       <slot>
         Add your content here.
@@ -20,16 +20,19 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
+<style lang="scss" scoped>
 .hero {
   background-color: gray;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   width: 100%;
-  height: 287px;
   display: flex;
   align-items: center;
   justify-content: center;
+  height: auto;
+}
+.hero--lg, .hero--xl {
+  height: 287px;
 }
 </style>

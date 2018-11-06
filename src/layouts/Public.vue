@@ -1,23 +1,23 @@
 <template>
   <v-app>
-    <nprogress-container></nprogress-container>
-    <header class="masthead">
+    <header :class="{masthead: true, 'masthead--compact': $vuetify.breakpoint.smAndDown}">
       <div class="masthead__title">
-        <img src="../assets/nawhas-logo-wordmark-vector.svg" height="38"
-             onerror="this.src='../assets/nawhas-logo-wordmark-48.png'" alt="Nawhas.com">
+        <v-btn icon class="masthead__nav-button" v-show="$vuetify.breakpoint.smAndDown" @click="sidebar = !sidebar">
+          <v-icon>menu</v-icon>
+        </v-btn>
+        <img class="masthead__logo masthead__logo--desktop" src="../assets/logo.svg" height="38"
+             onerror="this.src='../assets/logo.png'" alt="Nawhas.com">
+        <img class="masthead__logo masthead__logo--mobile" src="../assets/nawhas-logo-256.png" height="38"
+             alt="Nawhas.com">
       </div>
       <div class="masthead__search">
-        <v-btn icon class="search__search-icon">
-          <v-icon>search</v-icon>
-        </v-btn>
-        <v-btn icon class="search__clear-icon">
-          <v-icon>clear</v-icon>
-        </v-btn>
+        <v-btn icon class="search__search-icon"><v-icon>search</v-icon></v-btn>
+        <v-btn icon class="search__clear-icon"><v-icon>clear</v-icon></v-btn>
         <div class="search__box">
-          <input type="text" placeholder="Search for reciters, nawhas, and more..."/>
+          <input type="text" :placeholder="searchPlaceholder"/>
         </div>
       </div>
-      <div class="masthead__right">
+      <div class="masthead__right" v-show="!$vuetify.breakpoint.smAndDown">
         <router-link tag="span" to="/auth/redirect" v-if="!authenticated">
           <v-btn flat>Log In</v-btn>
         </router-link>
@@ -27,162 +27,54 @@
         <v-btn flat @click="logout" v-if="authenticated">Log Out</v-btn>
       </div>
     </header>
-    <aside class="nav-sidebar">
-      <div class="nav-sidebar__list">
-        <div v-for="(item, index) in navigation" :key="item.group">
-          <v-list>
-            <v-list-tile v-for="link in item.children" :key="link.to" :to="link.to" :exact="link.exact">
-              <v-list-tile-action>
-                <v-icon>{{ link.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>{{ link.title }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-          <v-divider v-if="index < navigation.length - 1"></v-divider>
-        </div>
-      </div>
-    </aside>
-    <main>
+    <sidebar :toggled="sidebar"></sidebar>
+    <main :class="{'main-content--compact': $vuetify.breakpoint.smAndDown}">
       <router-view></router-view>
     </main>
   </v-app>
 </template>
 
-<script>
-import NprogressContainer from 'vue-nprogress/src/NprogressContainer';
+<script lang="ts">
+import Sidebar from '@/components/Sidebar.vue';
 
 export default {
   name: 'Home',
   components: {
-    NprogressContainer
+    Sidebar,
   },
   methods: {
     logout() {
       this.$store.dispatch('auth/logout');
     }
   },
+  data() {
+    return {
+      sidebar: false,
+    }
+  },
   computed: {
     authenticated() {
       return this.$store.getters['auth/authenticated'];
     },
-    navigation() {
-      // return filtered nav list based on role
-      const items = [];
-      const role = this.$store.getters['auth/userRole'];
+    searchPlaceholder() {
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return 'Search';
+      }
 
-      this.items.forEach((group) => {
-        if (role) {
-          if (group.role && group.role !== role.role) {
-            return;
-          }
-        }
-
-        const children = [];
-        group.children.forEach((child) => {
-          if (child.role && child.role !== role) {
-            return;
-          }
-          children.push(child);
-        });
-        group.children = children;
-
-        if (group.children.length > 0) {
-          items.push(group);
-        }
-      });
-
-      return items;
+      return 'Search for reciters, nawhas, and more...';
     },
-  },
-  data() {
-    return {
-      items: [
-        {
-          group: 'main',
-          children: [
-            {
-              icon: 'home',
-              title: 'Home',
-              exact: true,
-              to: '/',
-            },
-            {
-              icon: 'people',
-              title: 'Reciters',
-              exact: false,
-              to: '/reciters',
-            },
-            {
-              icon: 'label',
-              title: 'Topics',
-              exact: false,
-              to: '/topics',
-              role: 'admin'
-            },
-            {
-              icon: 'library_books',
-              title: 'My Library',
-              exact: false,
-              to: '/library',
-              role: 'admin'
-            }
-          ]
-        },
-        {
-          group: 'trending',
-          children: [
-            {
-              icon: 'trending_up',
-              title: 'Top Charts',
-              exact: true,
-              to: '/charts',
-              role: 'admin'
-            },
-            {
-              icon: 'whatshot',
-              title: 'Trending',
-              exact: false,
-              to: '/trending',
-              role: 'admin'
-            },
-            {
-              icon: 'date_range',
-              title: 'New Releases',
-              exact: false,
-              to: '/new-releases',
-              role: 'admin'
-            }
-          ]
-        },
-        {
-          group: 'manage',
-          children: [
-            {
-              icon: 'file_upload',
-              title: 'Upload',
-              exact: true,
-              to: '/upload',
-              role: 'admin',
-            },
-            {
-              icon: 'settings',
-              title: 'Settings',
-              exact: false,
-              to: '/settings',
-              role: 'admin',
-            }
-          ]
-        }
-      ]
-    };
+    sidebarClasses() {
+      return {
+        'nav-sidebar': true,
+        'nav-sidebar--slider': this.$vuetify.breakpoint.smAndDown,
+        'elevation-8': this.$vuetify.breakpoint.smAndDown,
+      };
+    }
   },
 };
 </script>
 
-<style lang="stylus" scoped>
-@import '../styles/theme';
+<style lang="scss" scoped>
 .masthead {
   background: white;
   padding: 10px 16px;
@@ -191,6 +83,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   min-width: min-content;
+  width: 100%;
+  height: 72px;
   position: fixed;
   white-space: nowrap;
   top: 0;
@@ -201,6 +95,14 @@ export default {
     min-width: 260px;
     padding-right: 30px;
     padding-left: 8px;
+    align-items: center;
+
+    .masthead__logo--desktop {
+      display: block;
+    }
+    .masthead__logo--mobile {
+      display: none;
+    }
   }
 
   .masthead__search {
@@ -244,6 +146,18 @@ export default {
       }
     }
   }
+  .masthead__right {
+    text-align: right;
+  }
+}
+
+
+.masthead--compact {
+  padding-left: 0;
+  .masthead__title {
+    min-width: 50%;
+    padding-left: 0;
+  }
 }
 
 .nav-sidebar {
@@ -257,23 +171,35 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
   border-right: 1px solid rgba(0, 0, 0, 0.08);
+  will-change: left;
 
-  .list__tile__action {
-    justify-content center;
+  &.nav-sidebar--slider {
+    left: 0;
+    top: 0;
+
   }
-  .list__tile--active {
-    .list__tile__action i.material-icons {
-      color: $theme.primary;
+
+  .nav__tile__action {
+    justify-content: center;
+  }
+  .nav__tile--active {
+    .nav__tile__action {
+      color: var(--v-primary-base);
     }
-    .list__tile__title {
+    .nav__tile__content {
       font-weight: bold;
-      color: #333333;
+      color: var(--v-primary-base);
     }
   }
 }
 
+
 main {
   padding-left: 260px;
   padding-top: 72px;
+
+  &.main-content--compact {
+    padding-left: 0;
+  }
 }
 </style>
