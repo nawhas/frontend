@@ -28,7 +28,7 @@
         :items="tracks.data"
         hide-actions
         class="album__tracks">
-      <template slot="items" scope="props">
+      <template slot="items">
         <tr @click="goToTrack(props.item)" class="album__track">
           <td class="text-xs-right">{{ props.item.number }}</td>
           <td>{{ props.item.name }}</td>

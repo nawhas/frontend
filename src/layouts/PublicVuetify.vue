@@ -44,25 +44,19 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import items from '@/data/navigation';
+import navItems from '@/data/navigation';
 
 @Component
 export default class PublicVuetify extends Vue {
-  private items! = items;
-  private drawer!: boolean | null = null;
+  private items = navItems;
+  private drawer: boolean | null = null;
 
   get navigation() {
     // return filtered nav list based on role
-    const items = [];
+    const items: object[] = [];
     const role = this.$store.getters['auth/userRole'];
 
-    this.items.forEach((group) => {
-      if (role) {
-        if (group.role && group.role !== role.role) {
-          return;
-        }
-      }
-
+    for (const group of this.items) {
       const children = [];
       group.children.forEach((child) => {
         if (child.role && child.role !== role) {
@@ -75,7 +69,7 @@ export default class PublicVuetify extends Vue {
       if (group.children.length > 0) {
         items.push(group);
       }
-    });
+    }
 
     return items;
   }

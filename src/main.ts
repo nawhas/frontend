@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { sync } from 'vuex-router-sync'
+import { sync } from 'vuex-router-sync';
 import './plugins/progress';
 import './plugins/vuetify';
 import App from './App.vue';
