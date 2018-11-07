@@ -35,7 +35,7 @@
       <v-btn icon to="/auth/redirect"><v-icon>account_circle</v-icon></v-btn>
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height class="grey lighten-5 main-container">
+      <v-container fluid class="grey lighten-5 main-container">
         <router-view></router-view>
       </v-container>
     </v-content>
