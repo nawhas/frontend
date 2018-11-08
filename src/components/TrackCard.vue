@@ -1,21 +1,23 @@
 <template>
-  <v-card class="track-card" :style="{ 'background-color': background }" @click="goToTrack()">
-    <div class="track-card__text" :style="{ 'color': textColor }">
-      <div class="track-card__name body-2" :title="name">
-        {{ name }}
+  <div @click="goToTrack()">
+    <v-card class="track-card" :style="{ 'background-color': background }">
+      <div class="track-card__text" :style="{ 'color': textColor }">
+        <div class="track-card__name body-2" :title="name">
+          {{ name }}
+        </div>
+        <div class="track-card__album caption" :title="album.name">
+          {{ album.name }}
+        </div>
+        <div class="track-card__reciter-year caption" :title="reciterYear">
+          {{ reciterYear }}
+        </div>
       </div>
-      <div class="track-card__album caption" :title="album.name">
-        {{ album.name }}
+      <div class="track-card__album-art">
+        <div class="track-card__album-art-gradient" :style="{background: gradient}"></div>
+        <img crossorigin ref="artwork" :src="album.artwork" :alt="name"/>
       </div>
-      <div class="track-card__reciter-year caption" :title="reciterYear">
-        {{ reciterYear }}
-      </div>
-    </div>
-    <div class="track-card__album-art">
-      <div class="track-card__album-art-gradient" :style="{background: gradient}"></div>
-      <img crossorigin ref="artwork" :src="album.artwork" :alt="name"/>
-    </div>
-  </v-card>
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -39,7 +41,11 @@ export default {
       });
     },
     goToTrack() {
-      this.$router.push(`/reciters/${this.reciter.slug}/albums/${this.album.year}/tracks/${this.slug}`);
+      this.$router.push({
+        name: 'Track-Page', params: {
+          reciter: this.reciter.slug, album: this.album.year, track: this.slug
+        }
+      });
     },
   },
   data() {

@@ -32,7 +32,7 @@
       <v-container grid-list-lg class="pa-0" fluid>
         <v-layout row wrap>
           <v-flex xs12 sm6 md4 v-for="track in tracks" v-bind:key="track.id">
-            <track-card v-bind="track" :show-reciter="false" />
+            <track-card v-bind="track" :show-reciter="false" ></track-card>
           </v-flex>
         </v-layout>
       </v-container>

@@ -24,11 +24,12 @@
       </v-btn>
     </div>
     <v-data-table
-        :headers="headers"
-        :items="tracks.data"
-        hide-actions
-        class="album__tracks">
-      <template slot="items">
+      :headers="headers"
+      :items="tracks.data"
+      hide-actions
+      class="album__tracks"
+    >
+      <template slot="items" slot-scope="props">
         <tr @click="goToTrack(props.item)" class="album__track">
           <td class="text-xs-right">{{ props.item.number }}</td>
           <td>{{ props.item.name }}</td>
@@ -60,7 +61,11 @@ export default {
       });
     },
     goToTrack(track) {
-      this.$router.push(`/reciters/${track.reciter.slug}/albums/${this.year}/tracks/${track.slug}`);
+      this.$router.push({
+        name: 'Track-Page', params: {
+          reciter: track.reciter.slug, album: this.year, track: track.slug
+        }
+      });
     },
     goToEditAlbum() {
       this.$router.push(`/reciters/${this.reciterSlug}/albums/${this.year}/update`);
