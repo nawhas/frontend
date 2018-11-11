@@ -27,42 +27,34 @@
 </template>
 
 <script>
-import {getTopReciters} from '../../../services/popular';
-import {getReciters} from '../../../services/reciters';
-import ReciterCard from '../../../components/ReciterCard';
+  import { mapGetters } from 'vuex';
+  import {getTopReciters} from '../../../services/popular';
+  import {getReciters} from '../../../services/reciters';
+  import ReciterCard from '../../../components/ReciterCard';
 
-export default {
-  name: 'Reciters',
-  components: {
-    ReciterCard,
-  },
-  methods: {
-    setData({reciters, popularReciters}) {
-      this.reciters = reciters;
-      this.popularReciters = popularReciters;
+  export default {
+    name: 'Reciters',
+    components: {
+      ReciterCard,
     },
-    createNewReciter() {
-      this.$router.push('/reciters/create');
+    methods: {
+      setData({reciters, popularReciters}) {
+        this.reciters = reciters;
+        this.popularReciters = popularReciters;
+      },
+      createNewReciter() {
+        this.$router.push('/reciters/create');
+      },
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    Promise.all([
-      getReciters(),
-      getTopReciters({limit: 6}),
-    ]).then((responses) => {
-      const [reciters, popularReciters] = responses;
-
-      next((vm) => vm.setData({
-        reciters: reciters.data.data,
-        popularReciters: popularReciters.data.data,
-      }));
-    });
-  },
-  data() {
-    return {
-      reciters: [],
-      popularReciters: [],
-    };
-  },
-};
+    created() {
+      this.$store.dispatch('reciters/fetchReciters');
+      this.$store.dispatch('popular/fetchPopularReciters');
+    },
+    computed: {
+      ...mapGetters({
+        reciters: 'reciters/reciters',
+        popularReciters: 'popular/popularReciters',
+      })
+    },
+  };
 </script>
