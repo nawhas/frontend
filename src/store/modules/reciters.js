@@ -26,6 +26,9 @@ const mutations = {
   STORE_RECITER(state, payload) {
     state.reciter.push(payload.data);
   },
+  UPDATE_RECITER(state, payload) {
+    state.reciter = payload.data;
+  }
 };
 
 const actions = {
@@ -49,6 +52,14 @@ const actions = {
     client.post('/v1/reciters', payload.form)
       .then((response) => {
         commit('STORE_RECITER', {
+          data: response.data.data
+        });
+      });
+  },
+  updateReciter({commit}, payload) {
+    client.post(`/v1/reciters/${payload.reciter}`, payload.form)
+      .then((response) => {
+        commit('UPDATE_RECITER', {
           data: response.data.data
         });
       });

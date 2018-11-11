@@ -31,16 +31,16 @@ const mutations = {
 };
 
 const actions = {
-  fetchPopularReciters({commit}) {
-    client.get('/v1/popular/reciters')
+  fetchPopularReciters({commit},  options = {}) {
+    client.get('/v1/popular/reciters', options)
       .then((response) => {
         commit('FETCH_POPULAR_RECITERS', {
           data: response.data.data
         });
       });
   },
-  fetchPopularAlbums({commit}) {
-    client.get('/v1/popular/albums')
+  fetchPopularAlbums({commit},  options = {}) {
+    client.get('/v1/popular/albums', options)
       .then((response) => {
         commit('FETCH_POPULAR_ALBUMS', {
           data: response.data.data

@@ -48,7 +48,7 @@
     },
     created() {
       this.$store.dispatch('reciters/fetchReciters');
-      this.$store.dispatch('popular/fetchPopularReciters');
+      this.$store.dispatch('popular/fetchPopularReciters', {limit: 6});
     },
     computed: {
       ...mapGetters({
