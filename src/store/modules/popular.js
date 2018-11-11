@@ -32,7 +32,7 @@ const mutations = {
 
 const actions = {
   fetchPopularReciters({commit}) {
-    client.get('/api/popular/reciters')
+    client.get('/v1/popular/reciters')
       .then((response) => {
         commit('FETCH_POPULAR_RECITERS', {
           data: response.data.data
@@ -40,7 +40,7 @@ const actions = {
       });
   },
   fetchPopularAlbums({commit}) {
-    client.get('/api/popular/albums')
+    client.get('/v1/popular/albums')
       .then((response) => {
         commit('FETCH_POPULAR_ALBUMS', {
           data: response.data.data
@@ -48,7 +48,7 @@ const actions = {
       });
   },
   fetchPopularTracks({commit}, options = {}) {
-    client.get('/api/popular/tracks', options)
+    client.get('/v1/popular/tracks', options)
       .then((response) => {
         commit('FETCH_POPULAR_TRACKS', {
           data: response.data.data

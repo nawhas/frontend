@@ -31,7 +31,7 @@ const mutations = {
 
 const actions = {
   fetchTracks({commit}, payload) {
-    client.get(`/api/reciters/${payload.reciter}/albums/${payload.album}/tracks`)
+    client.get(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks`)
       .then((response) => {
         commit('FETCH_TRACKS', {
           data: response.data.data
@@ -39,7 +39,7 @@ const actions = {
       });
   },
   fetchTrack({commit}, payload) {
-    client.get(`/api/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`)
+    client.get(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`)
       .then((response) => {
         commit('FETCH_TRACK', {
           data: response.data.data
@@ -47,7 +47,7 @@ const actions = {
       });
   },
   storeTrack({commit}, payload) {
-    client.post(`/api/reciters/${payload.reciter}/albums/${payload.album}/tracks`, payload.form)
+    client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks`, payload.form)
       .then((response) => {
         commit('STORE_TRACK', {
           data: response.data.data
@@ -55,7 +55,7 @@ const actions = {
       });
   },
   updateTrack({commit}, payload) {
-    client.post(`/api/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`, payload.form)
+    client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`, payload.form)
       .then((response) => {
         commit('UPDATE_TRACK', {
           data: response.data.data

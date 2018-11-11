@@ -30,7 +30,7 @@ const mutations = {
 
 const actions = {
   fetchReciters({commit}) {
-    client.get('/api/reciters')
+    client.get('/v1/reciters')
       .then((response) => {
         commit('FETCH_RECITERS', {
           data: response.data.data
@@ -38,7 +38,7 @@ const actions = {
       });
   },
   fetchReciter({commit}, payload) {
-    client.get(`/api/reciters/${payload.reciter}`)
+    client.get(`/v1/reciters/${payload.reciter}`)
       .then((response) => {
         commit('FETCH_RECITER', {
           data: response.data
@@ -46,7 +46,7 @@ const actions = {
       });
   },
   storeReciter({commit}, payload) {
-    client.post('/api/reciters', payload.form)
+    client.post('/v1/reciters', payload.form)
       .then((response) => {
         commit('STORE_RECITER', {
           data: response.data.data

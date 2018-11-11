@@ -18,7 +18,7 @@ const mutations = {
 
 const actions = {
   fetchAlbums({commit}, payload) {
-    client.get(`/api/reciters/${payload.reciter}/albums`)
+    client.get(`/v1/reciters/${payload.reciter}/albums`)
       .then((response) => {
         commit('FETCH_ALBUMS', {
           data: response.data.data
