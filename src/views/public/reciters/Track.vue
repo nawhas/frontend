@@ -40,28 +40,36 @@
               <v-btn v-if="isAdmin"
                 @click="goToAddTracks"
               >Add Lyric</v-btn>
-              <div class="lyrics__content" v-if="track.lyric.length != 0">
-                <v-tabs
-                  v-model="active"
-                  class="white" dark>
-                  <v-tab
-                    v-for="n in track.lyric"
-                    :key="n.id"
-                    ripple
-                  >
-                    {{ n.title }}
-
-                  </v-tab>
-                  <v-tab-item
-                    v-for="n in track.lyric"
-                    :key="n.id"
-                  >
-                    <v-card flat>
-                      <v-card-text>
-                        <p v-html="n.text"></p>
-                      </v-card-text>
-                    </v-card>
-                  </v-tab-item>
+              <div class="lyrics__content" v-if="track.lyric">
+                <v-tabs centered>
+                  <v-tabs-bar class="white" dark>
+                    <v-tabs-slider class="red"></v-tabs-slider>
+                    <v-tabs-item
+                      v-for="i in track.lyric"
+                      :key="i.id"
+                      :href="'#tab-' + i.id"
+                    >
+                      {{ i.title }}
+                    </v-tabs-item>
+                  </v-tabs-bar>
+                  <v-tabs-items>
+                    <v-tabs-content
+                      v-for="i in track.lyric"
+                      :key="i.id"
+                      :id="'tab-' + i.id"
+                    >
+                      <v-card flat>
+                        <v-card-text>
+                          <!-- v-if="this.$store.getters['auth/isAdmin']" -->
+                          <v-btn v-if="isAdmin"
+                            @click="goToEditLyric(i)">
+                            Edit Lyrics
+                          </v-btn>
+                          <p v-html="i.text"></p>
+                        </v-card-text>
+                      </v-card>
+                    </v-tabs-content>
+                  </v-tabs-items>
                 </v-tabs>
               </div>
               <div class="lyrics__empty" v-else>
@@ -88,7 +96,7 @@
             </v-card>
             <v-card class="track-page-content__card track-page-content__card--audio">
               Video
-              <section v-if="track.video != 'null'">
+              <section v-if="track.video">
                 <youtube player-width="100%" player-height="100%" :video-id="videoId"></youtube>
               </section>
               <section v-else>
