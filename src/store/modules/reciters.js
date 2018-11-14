@@ -1,5 +1,4 @@
 import client from "../../services/client.js";
-import store from "../../store";
 
 const state = {
   reciters: null,
@@ -21,10 +20,9 @@ const mutations = {
   },
   FETCH_RECITER(state, payload) {
     state.reciter = payload.data;
-    store.dispatch('popular/fetchPopularTracks', {limit: 6, reciterId: state.reciter.id });
   },
   STORE_RECITER(state, payload) {
-    state.reciter.push(payload.data);
+    state.reciters.push(payload.data);
   },
   UPDATE_RECITER(state, payload) {
     state.reciter = payload.data;
@@ -32,37 +30,29 @@ const mutations = {
 };
 
 const actions = {
-  fetchReciters({commit}) {
-    client.get('/v1/reciters')
-      .then((response) => {
-        commit('FETCH_RECITERS', {
-          data: response.data.data
-        });
-      });
+  async fetchReciters({commit}) {
+    const response = await client.get('/v1/reciters');
+    commit('FETCH_RECITERS', {
+      data: response.data.data
+    });
   },
-  fetchReciter({commit}, payload) {
-    client.get(`/v1/reciters/${payload.reciter}`)
-      .then((response) => {
-        commit('FETCH_RECITER', {
-          data: response.data
-        });
-      });
+  async fetchReciter({commit}, payload) {
+    const response = await client.get(`/v1/reciters/${payload.reciter}`);
+    commit('FETCH_RECITER', {
+      data: response.data
+    });
   },
-  storeReciter({commit}, payload) {
-    client.post('/v1/reciters', payload.form)
-      .then((response) => {
-        commit('STORE_RECITER', {
-          data: response.data.data
-        });
-      });
+  async storeReciter({commit}, payload) {
+    const response = await  client.post('/v1/reciters', payload.form);
+    commit('STORE_RECITER', {
+      data: response.data.data
+    });
   },
-  updateReciter({commit}, payload) {
-    client.post(`/v1/reciters/${payload.reciter}`, payload.form)
-      .then((response) => {
-        commit('UPDATE_RECITER', {
-          data: response.data.data
-        });
-      });
+  async updateReciter({commit}, payload) {
+    const response = await client.post(`/v1/reciters/${payload.reciter}`, payload.form);
+    commit('UPDATE_RECITER', {
+      data: response.data.data
+    });
   }
 };
 

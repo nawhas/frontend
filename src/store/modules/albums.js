@@ -17,13 +17,11 @@ const mutations = {
 };
 
 const actions = {
-  fetchAlbums({commit}, payload) {
-    client.get(`/v1/reciters/${payload.reciter}/albums`)
-      .then((response) => {
-        commit('FETCH_ALBUMS', {
-          data: response.data.data
-        });
-      });
+  async fetchAlbums({commit}, payload) {
+    const response = await client.get(`/v1/reciters/${payload.reciter}/albums`);
+    commit('FETCH_ALBUMS', {
+      data: response.data.data
+    });
   }
 };
 

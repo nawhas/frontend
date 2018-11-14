@@ -45,7 +45,7 @@
                   v-model="active"
                   class="white" dark>
                   <v-tab
-                    v-for="n in track.lyric"
+                    v-for="n in track.lyric.data"
                     :key="n.id"
                     ripple
                   >
@@ -53,7 +53,7 @@
 
                   </v-tab>
                   <v-tab-item
-                    v-for="n in track.lyric"
+                    v-for="n in track.lyric.data"
                     :key="n.id"
                   >
                     <v-card flat>
@@ -106,13 +106,20 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex';
   import Aplayer from 'vue-aplayer';
   import Vibrant from 'node-vibrant';
-  import {getTrack} from '../../../services/tracks';
-  import HeroBanner from '../../../components/HeroBanner';
-  import ReciterCard from '../../../components/ReciterCard';
-  import TrackCard from '../../../components/TrackCard';
-  import Album from '../../../components/Album';
+  import HeroBanner from '@/components/HeroBanner';
+  import ReciterCard from '@/components/ReciterCard';
+  import TrackCard from '@/components/TrackCard';
+  import Album from '@/components/Album';
+  import store from '@/store';
+
+  async function fetchData(reciter, album, track) {
+    await Promise.all([
+      store.dispatch('tracks/fetchTrack', { reciter, album, track }),
+    ]);
+  }
 
   export default {
     name: 'TrackPage',
@@ -125,21 +132,6 @@
     },
     data() {
       return {
-        track: {
-          album: null,
-          audio: null,
-          created_at: null,
-          id: null,
-          language: null,
-          links: null,
-          lyric: null,
-          name: null,
-          number: null,
-          reciter: null,
-          slug: null,
-          updated_at: null,
-          video: null,
-        },
         background: '#222',
         textColor: '#fff',
         videoId: '',
@@ -149,9 +141,22 @@
       };
     },
     computed: {
+      ...mapGetters({
+        track: 'tracks/track',
+      }),
       isAdmin() {
         return this.$store.getters['auth/isAdmin'];
       }
+    },
+    created() {
+      if (this.track.video) {
+        this.videoId = this.$youtube.getIdFromURL(this.track.video);
+        this.startTime = this.$youtube.getTimeFromURL(this.track.video);
+      } else {
+        this.videoId = null;
+        this.startTime = null;
+      }
+      this.setBackgroundFromImage();
     },
     methods: {
       goToAddTracks() {
@@ -180,29 +185,6 @@
           }
         });
       },
-      setTrack(track) {
-        this.track.album = track.album;
-        this.track.audio = track.audio;
-        this.track.created_at = track.created_at;
-        this.track.id = track.id;
-        this.track.language = track.language.data;
-        this.track.links = track.links;
-        this.track.lyric = track.lyric.data;
-        this.track.name = track.name;
-        this.track.number = track.number;
-        this.track.reciter = track.reciter;
-        this.track.slug = track.slug;
-        this.track.updated_at = track.updated_at;
-        this.track.video = track.video;
-        if (track.video) {
-          this.videoId = this.$youtube.getIdFromURL(track.video);
-          this.startTime = this.$youtube.getTimeFromURL(track.video);
-        } else {
-          this.videoId = null;
-          this.startTime = null;
-        }
-        this.setBackgroundFromImage();
-      },
       setBackgroundFromImage() {
         if (!this.track) {
           return;
@@ -217,17 +199,13 @@
         });
       },
     },
-    beforeRouteEnter(to, from, next) {
-      getTrack(to.params.reciter, to.params.album, to.params.track).then((response) => {
-        next((vm) => vm.setTrack(response.data));
-      });
+    async beforeRouteEnter(to, from, next) {
+      await fetchData(to.params.reciter, to.params.album, to.params.track);
+      next();
     },
-    beforeRouteUpdate(to, from, next) {
-      this.setTrack(null);
-      getTrack(to.params.reciter, to.params.album, to.params.track).then((response) => {
-        this.setTrack(response.data);
-        next();
-      });
+    async beforeRouteUpdate(to, from, next) {
+      await fetchData(to.params.reciter, to.params.album, to.params.track);
+      next();
     },
   };
 </script>

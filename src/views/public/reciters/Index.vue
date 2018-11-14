@@ -28,9 +28,15 @@
 
 <script>
   import { mapGetters } from 'vuex';
-  import {getTopReciters} from '../../../services/popular';
-  import {getReciters} from '../../../services/reciters';
-  import ReciterCard from '../../../components/ReciterCard';
+  import ReciterCard from '@/components/ReciterCard';
+  import store from '@/store';
+
+  async function fetchData() {
+    await Promise.all([
+      store.dispatch('reciters/fetchReciters'),
+      store.dispatch('popular/fetchPopularReciters', {limit: 6})
+    ]);
+  }
 
   export default {
     name: 'Reciters',
@@ -38,23 +44,23 @@
       ReciterCard,
     },
     methods: {
-      setData({reciters, popularReciters}) {
-        this.reciters = reciters;
-        this.popularReciters = popularReciters;
-      },
       createNewReciter() {
         this.$router.push('/reciters/create');
       },
-    },
-    created() {
-      this.$store.dispatch('reciters/fetchReciters');
-      this.$store.dispatch('popular/fetchPopularReciters', {limit: 6});
     },
     computed: {
       ...mapGetters({
         reciters: 'reciters/reciters',
         popularReciters: 'popular/popularReciters',
       })
+    },
+    async beforeRouteEnter(to, from, next) {
+      await fetchData();
+      next();
+    },
+    async beforeRouteUpdate(to, from, next) {
+      await fetchData();
+      next();
     },
   };
 </script>

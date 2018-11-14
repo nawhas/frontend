@@ -31,29 +31,23 @@ const mutations = {
 };
 
 const actions = {
-  fetchPopularReciters({commit},  options = {}) {
-    client.get('/v1/popular/reciters', options)
-      .then((response) => {
-        commit('FETCH_POPULAR_RECITERS', {
-          data: response.data.data
-        });
-      });
+  async fetchPopularReciters({commit},  options = {}) {
+    const response = await client.get('/v1/popular/reciters', options);
+    commit('FETCH_POPULAR_RECITERS', {
+      data: response.data.data
+    });
   },
-  fetchPopularAlbums({commit},  options = {}) {
-    client.get('/v1/popular/albums', options)
-      .then((response) => {
-        commit('FETCH_POPULAR_ALBUMS', {
-          data: response.data.data
-        });
-      });
+  async fetchPopularAlbums({commit},  options = {}) {
+    const response = await client.get('/v1/popular/albums', options);
+    commit('FETCH_POPULAR_ALBUMS', {
+      data: response.data.data
+    });
   },
-  fetchPopularTracks({commit}, options = {}) {
-    client.get('/v1/popular/tracks', options)
-      .then((response) => {
-        commit('FETCH_POPULAR_TRACKS', {
-          data: response.data.data
-        });
-      });
+  async fetchPopularTracks({commit}, options = {}) {
+    const response = await client.get('/v1/popular/tracks', options);
+    commit('FETCH_POPULAR_TRACKS', {
+      data: response.data.data
+    });
   },
 };
 

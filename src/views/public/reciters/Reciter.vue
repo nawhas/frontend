@@ -48,11 +48,20 @@
 </template>
 
 <script>
-  import HeroBanner from '../../../components/HeroBanner';
-  import ReciterCard from '../../../components/ReciterCard';
-  import TrackCard from '../../../components/TrackCard';
-  import Album from '../../../components/Album';
   import { mapGetters } from 'vuex';
+  import HeroBanner from '@/components/HeroBanner';
+  import ReciterCard from '@/components/ReciterCard';
+  import TrackCard from '@/components/TrackCard';
+  import Album from '@//components/Album';
+  import store from '@/store';
+
+  async function fetchData(reciter) {
+    await Promise.all([
+      store.dispatch('albums/fetchAlbums', { reciter }),
+      store.dispatch('reciters/fetchReciter', { reciter })
+    ]);
+    await store.dispatch('popular/fetchPopularTracks', {limit: 6, reciterId: store.getters['reciters/reciter'].id });
+  }
 
   export default {
     name: 'Reciter-Profile',
@@ -62,10 +71,13 @@
       ReciterCard,
       Album,
     },
-    created() {
-      this.$store.dispatch('reciters/fetchReciter', { reciter: this.$route.params.reciter });
-      this.$store.dispatch('albums/fetchAlbums', { reciter: this.$route.params.reciter });
-//      this.$store.dispatch('popular/fetchPopularTracks', {limit: 6, reciterId: this.$route.params.reciter });
+    async beforeRouteEnter(to, from, next) {
+      await fetchData(to.params.reciter);
+      next();
+    },
+    async beforeRouteUpdate(to, from, next) {
+      await fetchData(to.params.reciter);
+      next();
     },
     computed: {
       ...mapGetters({

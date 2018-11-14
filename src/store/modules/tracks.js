@@ -30,37 +30,29 @@ const mutations = {
 };
 
 const actions = {
-  fetchTracks({commit}, payload) {
-    client.get(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks`)
-      .then((response) => {
-        commit('FETCH_TRACKS', {
-          data: response.data.data
-        });
-      });
+  async fetchTracks({commit}, payload) {
+    const response = await client.get(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks`);
+    commit('FETCH_TRACKS', {
+      data: response.data.data
+    });
   },
-  fetchTrack({commit}, payload) {
-    client.get(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`)
-      .then((response) => {
-        commit('FETCH_TRACK', {
-          data: response.data.data
-        });
-      });
+  async fetchTrack({commit}, payload) {
+    const response = await client.get(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`);
+    commit('FETCH_TRACK', {
+      data: response.data
+    });
   },
-  storeTrack({commit}, payload) {
-    client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks`, payload.form)
-      .then((response) => {
-        commit('STORE_TRACK', {
-          data: response.data.data
-        });
-      });
+  async storeTrack({commit}, payload) {
+    const response = await client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks`, payload.form);
+    commit('STORE_TRACK', {
+      data: response.data.data
+    });
   },
-  updateTrack({commit}, payload) {
-    client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`, payload.form)
-      .then((response) => {
-        commit('UPDATE_TRACK', {
-          data: response.data.data
-        });
-      });
+  async updateTrack({commit}, payload) {
+    const response = await client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`, payload.form);
+    commit('UPDATE_TRACK', {
+      data: response.data.data
+    });
   }
 };
 
