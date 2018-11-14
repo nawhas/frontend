@@ -10,24 +10,24 @@
         <v-layout row>
           <v-flex>
             <v-text-field
-                label="Album Name"
-                v-model="album.name"
-                required />
+              label="Album Name"
+              v-model="album.name"
+              required />
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex>
             <v-text-field
-                label="Album year"
-                v-model="album.year"
-                required />
+              label="Album year"
+              v-model="album.year"
+              required />
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex>
             <input
-                type="file"
-                @change="onFileChange" />
+              type="file"
+              @change="onFileChange" />
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -41,37 +41,48 @@
 </template>
 
 <script>
-import client from '@/services/client';
+  import { mapGetters } from 'vuex';
+  import store from '@/store';
 
-export default {
-  name: 'Reciter-Create',
-  methods: {
-    uploadForm() {
-      const form = new FormData();
-      form.append('name', this.album.name);
-      form.append('artwork', this.album.artwork);
-      form.append('year', this.album.year);
-      client.post(`/api/reciters/${this.reciter.slug}/albums`, form).then(() => {
-        this.$router.push(`/reciters/${this.reciter.slug}`);
-      });
-    },
-    onFileChange(e) {
-      this.album.artwork = e.target.files[0];
-    },
-    setData(reciter) {
-      this.reciter = reciter || null;
-    }
-  },
-  data() {
-    return {
-      reciter: {},
-      album: { name: null, artwork: null, year: null },
-    };
-  },
-  created() {
-    client.get(`/api/reciters/${this.$route.params.reciter}`).then((response) => {
-      this.setData(response.data);
-    });
+  async function fetchData(reciter) {
+    await Promise.all([
+      store.dispatch('reciters/fetchReciter', { reciter })
+    ]);
   }
-};
+
+
+  export default {
+    name: 'Album-Create',
+    methods: {
+      async uploadForm() {
+        const form = new FormData();
+        form.append('name', this.album.name);
+        form.append('artwork', this.album.artwork);
+        form.append('year', this.album.year);
+        await store.dispatch('albums/storeAlbum', { reciter: this.reciter.slug, form });
+        this.$router.push(`/reciters/${this.reciter.slug}`);
+      },
+      onFileChange(e) {
+        this.album.artwork = e.target.files[0];
+      }
+    },
+    computed: {
+      ...mapGetters({
+        reciter: 'reciters/reciter',
+      })
+    },
+    data() {
+      return {
+        album: { name: null, artwork: null, year: null },
+      };
+    },
+    async beforeRouteEnter(to, from, next) {
+      await fetchData(to.params.reciter);
+      next();
+    },
+    async beforeRouteUpdate(to, from, next) {
+      await fetchData(to.params.reciter);
+      next();
+    },
+  };
 </script>

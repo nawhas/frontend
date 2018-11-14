@@ -40,7 +40,7 @@
               <v-btn v-if="isAdmin"
                 @click="goToAddTracks"
               >Add Lyric</v-btn>
-              <div class="lyrics__content" v-if="track.lyric.length != 0">
+              <div class="lyrics__content" v-if="track.lyric.data.length != 0">
                 <v-tabs
                   v-model="active"
                   class="white" dark>
@@ -88,7 +88,7 @@
             </v-card>
             <v-card class="track-page-content__card track-page-content__card--audio">
               Video
-              <section v-if="track.video != 'null'">
+              <section v-if="track.video">
                 <youtube player-width="100%" player-height="100%" :video-id="videoId"></youtube>
               </section>
               <section v-else>
@@ -134,8 +134,8 @@
       return {
         background: '#222',
         textColor: '#fff',
-        videoId: '',
-        startTime: '',
+        videoId: null,
+        startTime: null,
         active: null,
         text: null
       };

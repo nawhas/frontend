@@ -9,30 +9,30 @@
       <v-layout row>
         <v-flex>
           <v-text-field
-              label="Track Name"
-              v-model="track.name"
-              required />
+            label="Track Name"
+            v-model="track.name"
+            required />
         </v-flex>
       </v-layout>
       <v-layout row>
         <v-flex>
           <v-text-field
-              label="Track Number"
-              v-model="track.trackNumber"
-              required />
+            label="Track Number"
+            v-model="track.number"
+            required />
         </v-flex>
       </v-layout>
       <v-layout row>
         <v-flex>
           <v-select
-              v-model="track.language"
-              :items="languages"
-              item-text="name"
-              item-value="slug"
-              label="Select"
-              persistent-hint
-              return-object
-              multiple />
+            v-model="track.language.data"
+            :items="languages"
+            item-text="name"
+            item-value="slug"
+            label="Select"
+            persistent-hint
+            return-object
+            multiple />
         </v-flex>
       </v-layout>
       <v-layout row>
@@ -51,16 +51,16 @@
         <v-flex>
           Change Audio
           <input
-              type="file"
-              @change="onFileChange($event)"
-              name="audio"/>
+            type="file"
+            @change="onFileChange($event)"
+            name="audio"/>
         </v-flex>
       </v-layout>
       <v-layout row>
         <v-flex>
           <v-text-field
-              label="YouTube Link To VIdeo"
-              v-model="track.video"
+            label="YouTube Link To VIdeo"
+            v-model="track.video"
           ></v-text-field>
         </v-flex>
       </v-layout>
@@ -73,74 +73,68 @@
   </v-flex>
 </template>
 
-<script lang="ts">
-import VueAplayer from 'vue-aplayer';
-import { getTrack, updateTrack } from '@/services/tracks';
-import client from '@/services/client';
+<script>
+  import VueAplayer from 'vue-aplayer';
+  import { mapGetters } from 'vuex';
+  import store from '@/store';
 
-export default {
-  name: 'Track-Update',
-  created() {
-    getTrack(this.$route.params.reciter, this.$route.params.album, this.$route.params.track)
-      .then((response) => {
-        this.setData(response.data);
-      });
-    client.get('/api/languages')
-      .then((response) => {
-        this.languages = response.data.data;
-      });
-  },
-  data() {
-    return {
-      reciter: {},
-      album: {},
-      track: {
-        name: null,
-        slug: null,
-        audio: null,
-        video: null,
-        language: {},
-        trackNumber: null,
-        updatedAudio: null
-      },
-      languages: null,
-    };
-  },
-  components: {
-    'a-player': VueAplayer
-  },
-  methods: {
-    onFileChange(e) {
-      this.track.updatedAudio = e.target.files[0];
+  async function fetchData(reciter, album, track) {
+    await Promise.all([
+      store.dispatch('reciters/fetchReciter', { reciter }),
+      store.dispatch('albums/fetchAlbum', { reciter, album }),
+      store.dispatch('tracks/fetchTrack', { reciter, album, track }),
+      store.dispatch('languages/fetchLanguages')
+    ]);
+  }
+
+
+  export default {
+    name: 'Track-Update',
+    components: {
+      'a-player': VueAplayer
     },
-    uploadForm() {
-      const form = new FormData();
-      form.append('updatedAudio', this.track.updatedAudio);
-      form.append('video', this.track.video);
-      form.append('name', this.track.name);
-      form.append('trackNumber', this.track.trackNumber);
-
-      for (const language of this.track.language) {
-        form.append('language[]', language.slug);
-      }
-
-      updateTrack(this.reciter.slug, this.album.year, this.track.slug, form)
-        .then(() => {
-          this.$router.push({
-            name: 'Track-Page',
-            params: { reciter: this.reciter.slug, album: this.album.year, track: this.track.slug }
-          });
+    methods: {
+      async uploadForm() {
+        const form = new FormData();
+        form.append('updatedAudio', this.updatedAudio);
+        form.append('video', this.track.video);
+        form.append('name', this.track.name);
+        form.append('number', this.track.number);
+        const languages = [];
+        for (const language of this.track.language.data) {
+          languages.push(language.slug);
+        }
+        form.append('language', languages);
+        await store.dispatch('tracks/updateTrack', { reciter: this.reciter.slug, album: this.album.year, track: this.track.id, form });
+        this.$router.push({
+          name: 'Track-Page',
+          params: { reciter: this.reciter.slug, album: this.album.year, track: this.track.slug }
         });
+      },
+      onFileChange(e) {
+        this.updatedAudio = e.target.files[0];
+      }
     },
-    setData(data) {
-      this.reciter = data.reciter;
-      this.album = data.album;
-      this.track.name = data.name;
-      this.track.audio = data.audio;
-      this.track.trackNumber = data.number;
-      this.track.slug = data.slug;
-      this.track.language = data.language.data;
-    }
-  },
-};
+    computed: {
+      ...mapGetters({
+        reciter: 'reciters/reciter',
+        album: 'albums/album',
+        track: 'tracks/track',
+        languages: 'languages/languages',
+      })
+    },
+    data() {
+      return {
+        updatedAudio: null
+      };
+    },
+    async beforeRouteEnter(to, from, next) {
+      await fetchData(to.params.reciter, to.params.album, to.params.track);
+      next();
+    },
+    async beforeRouteUpdate(to, from, next) {
+      await fetchData(to.params.reciter, to.params.album, to.params.track);
+      next();
+    },
+  };
 </script>

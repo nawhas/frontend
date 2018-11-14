@@ -1,12 +1,16 @@
-import client from "../../services/client.js";
+import client from "@/services/client.js";
 
 const state = {
-  albums: null
+  albums: null,
+  album: null
 };
 
 const getters = {
   albums: state => {
     return state.albums;
+  },
+  album: state => {
+    return state.album;
   },
 };
 
@@ -14,6 +18,15 @@ const mutations = {
   FETCH_ALBUMS(state, payload) {
     state.albums = payload.data;
   },
+  FETCH_ALBUM(state, payload) {
+    state.album = payload.data;
+  },
+  STORE_ALBUM(state, payload) {
+    state.album = payload.data;
+  },
+  UPDATE_ALBUM(state, payload) {
+    state.album = payload.data;
+  }
 };
 
 const actions = {
@@ -21,6 +34,24 @@ const actions = {
     const response = await client.get(`/v1/reciters/${payload.reciter}/albums`);
     commit('FETCH_ALBUMS', {
       data: response.data.data
+    });
+  },
+  async fetchAlbum({commit}, payload) {
+    const response = await client.get(`/v1/reciters/${payload.reciter}/albums/${payload.album}`);
+    commit('FETCH_ALBUM', {
+      data: response.data
+    });
+  },
+  async storeAlbum({commit}, payload) {
+    const response = await client.post(`/v1/reciters/${payload.reciter}/albums`, payload.form);
+    commit('STORE_ALBUM', {
+      data: response.data
+    });
+  },
+  async updateAlbum({commit}, payload) {
+    const response = await client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}`, payload.form);
+    commit('UPDATE_ALBUM', {
+      data: response.data
     });
   }
 };

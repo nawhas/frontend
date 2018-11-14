@@ -17,10 +17,10 @@
         </v-layout>
         <v-layout row>
           <v-flex>
-            <v-text-field
+            <v-textarea
               label="Reciter description"
               v-model="reciter.description"
-              multi-line />
+            ></v-textarea>
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -42,15 +42,13 @@
   export default {
     name: 'Reciter-Create',
     methods: {
-      uploadForm() {
+      async uploadForm() {
         const form = new FormData();
         form.append('name', this.reciter.name);
         form.append('avatar', this.reciter.avatar);
         form.append('description', this.reciter.description);
-        this.$store.dispatch('reciters/storeReciter', { form: form })
-          .then(() => {
-            this.$router.push({ name: 'Reciters'});
-          });
+        await this.$store.dispatch('reciters/storeReciter', { form: form });
+        this.$router.push({ name: 'Reciters'});
       },
       onFileChange(e) {
         this.reciter.avatar = e.target.files[0];

@@ -22,7 +22,7 @@ const mutations = {
     state.track = payload.data;
   },
   STORE_TRACK(state, payload) {
-    state.tracks.push(payload.data);
+    state.track = payload.data;
   },
   UPDATE_TRACK(state, payload) {
     state.track = payload.data;
@@ -45,13 +45,13 @@ const actions = {
   async storeTrack({commit}, payload) {
     const response = await client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks`, payload.form);
     commit('STORE_TRACK', {
-      data: response.data.data
+      data: response.data
     });
   },
   async updateTrack({commit}, payload) {
     const response = await client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`, payload.form);
     commit('UPDATE_TRACK', {
-      data: response.data.data
+      data: response.data
     });
   }
 };
