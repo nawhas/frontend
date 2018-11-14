@@ -18,12 +18,11 @@
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
-            <v-text-field
+            <v-textarea
               label="Lyric Text"
               v-model="lyric.text"
-              multiLine
               required
-            ></v-text-field>
+            ></v-textarea>
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -37,33 +36,55 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex';
+  import store from '@/store';
+
+  async function fetchData(reciter, album, track) {
+    await Promise.all([
+      store.dispatch('reciters/fetchReciter', { reciter }),
+      store.dispatch('albums/fetchAlbum', { reciter, album }),
+      store.dispatch('tracks/fetchTrack', { reciter, album, track }),
+    ]);
+  }
+
+
   export default {
     name: 'LyricsCreate',
+    methods: {
+      async uploadForm() {
+        const form = new FormData();
+        form.append('text', this.lyric.text);
+        form.append('track_id', this.track.id);
+        form.append('native_language', this.nativeLanguage);
+        const reciter = this.track.reciter.slug;
+        const album = this.track.album.year;
+        const track = this.track.slug;
+        await store.dispatch('lyrics/storeLyric', { reciter, album, track, form });
+        this.$router.push(`/reciters/${reciter}/albums/${album}/tracks/${track}`);
+      },
+    },
+    computed: {
+      ...mapGetters({
+        reciter: 'reciters/reciter',
+        album: 'albums/album',
+        track: 'tracks/track',
+      })
+    },
     data() {
       return {
-        track: null,
         lyric: {
           text: null,
         },
         nativeLanguage: false
       };
     },
-    methods: {
-      uploadForm() {
-        const form = new FormData();
-        form.append('text', this.lyric.text);
-        form.append('track_id', this.track.id);
-        form.append('native_language', this.nativeLanguage);
-
-
-        const reciter = this.track.reciter.slug;
-        const year = this.track.album.year;
-        const track = this.track.slug;
-      },
+    async beforeRouteEnter(to, from, next) {
+      await fetchData(to.params.reciter, to.params.album, to.params.track);
+      next();
     },
-    beforeRouteEnter(to, from, next) {
-    },
-    beforeRouteUpdate(to, from, next) {
+    async beforeRouteUpdate(to, from, next) {
+      await fetchData(to.params.reciter, to.params.album, to.params.track);
+      next();
     },
   };
 </script>
