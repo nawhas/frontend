@@ -48,124 +48,124 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex';
-  import HeroBanner from '@/components/HeroBanner';
-  import ReciterCard from '@/components/ReciterCard';
-  import TrackCard from '@/components/TrackCard';
-  import Album from '@//components/Album';
-  import store from '@/store';
+import { mapGetters } from 'vuex';
+import HeroBanner from '@/components/HeroBanner';
+import ReciterCard from '@/components/ReciterCard';
+import TrackCard from '@/components/TrackCard';
+import Album from '@//components/Album';
+import store from '@/store';
 
-  async function fetchData(reciter) {
-    await Promise.all([
-      store.dispatch('albums/fetchAlbums', { reciter }),
-      store.dispatch('reciters/fetchReciter', { reciter })
-    ]);
-    await store.dispatch('popular/fetchPopularTracks', {limit: 6, reciterId: store.getters['reciters/reciter'].id });
-  }
+async function fetchData(reciter) {
+	await Promise.all([
+		store.dispatch('albums/fetchAlbums', { reciter }),
+		store.dispatch('reciters/fetchReciter', { reciter })
+	]);
+	await store.dispatch('popular/fetchPopularTracks', {limit: 6, reciterId: store.getters['reciters/reciter'].id });
+}
 
-  export default {
-    name: 'Reciter-Profile',
-    components: {
-      HeroBanner,
-      TrackCard,
-      ReciterCard,
-      Album,
-    },
-    async beforeRouteEnter(to, from, next) {
-      await fetchData(to.params.reciter);
-      next();
-    },
-    async beforeRouteUpdate(to, from, next) {
-      await fetchData(to.params.reciter);
-      next();
-    },
-    computed: {
-      ...mapGetters({
-        reciter: 'reciters/reciter',
-        albums: 'albums/albums',
-        popularTracks: 'popular/popularTracks',
-      })
-    },
-    methods: {
-      goToEditReciter() {
-        this.$router.push(`/reciters/${this.reciter.slug}/update`);
-      },
-      createAlbum() {
-        this.$router.push(`/reciters/${this.reciter.slug}/albums/create`);
-      },
-    },
-  };
+export default {
+	name: 'Reciter-Profile',
+	components: {
+		HeroBanner,
+		TrackCard,
+		ReciterCard,
+		Album,
+	},
+	async beforeRouteEnter(to, from, next) {
+		await fetchData(to.params.reciter);
+		next();
+	},
+	async beforeRouteUpdate(to, from, next) {
+		await fetchData(to.params.reciter);
+		next();
+	},
+	computed: {
+		...mapGetters({
+			reciter: 'reciters/reciter',
+			albums: 'albums/albums',
+			popularTracks: 'popular/popularTracks',
+		})
+	},
+	methods: {
+		goToEditReciter() {
+			this.$router.push(`/reciters/${this.reciter.slug}/update`);
+		},
+		createAlbum() {
+			this.$router.push(`/reciters/${this.reciter.slug}/albums/create`);
+		},
+	},
+};
 </script>
 
 <style lang="stylus" scoped>
-  @import '../../../styles/theme.styl';
-  @import '../../../styles/_variables.styl';
+@import '../../../styles/theme.styl';
+@import '../../../styles/_variables.styl';
 
-  .reciter-hero {
-    .reciter-hero__ribbon {
-      width: 100%;
-      height: 220px;
-      margin-bottom: -220px;
-      background: linear-gradient(to bottom right, #E90500, #FA6000);
-    }
-    .reciter-hero__content {
-      padding: 80px 120px 24px 120px;
-    }
-    .reciter-hero__avatar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      top: -80px;
-      margin-bottom: -56px;
+.reciter-hero {
+	.reciter-hero__ribbon {
+		width: 100%;
+		height: 220px;
+		margin-bottom: -220px;
+		background: linear-gradient(to bottom right, #E90500, #FA6000);
+	}
+	.reciter-hero__content {
+		padding: 80px 120px 24px 120px;
+	}
+	.reciter-hero__avatar {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		top: -80px;
+		margin-bottom: -56px;
 
-      .avatar {
-        box-sizing: content-box;
-        border: 5px solid white;
-      }
-    }
-    .reciter-hero__card {
-      margin-top: 36px;
-      width: 100%;
-      min-height: 20px;
-      position: relative;
-      padding: 0 36px 24px 36px;
-    }
-    .reciter-hero__title {
-      font-family: 'Roboto Slab', sans-serif;
-      font-weight: 600;
-      color: #2e2e2e;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    .reciter-hero__social {
-      font-size: 140%;
-      list-style: none;
-      margin: 16px 0;
-      padding: 0;
-      text-align: center;
+		.avatar {
+			box-sizing: content-box;
+			border: 5px solid white;
+		}
+	}
+	.reciter-hero__card {
+		margin-top: 36px;
+		width: 100%;
+		min-height: 20px;
+		position: relative;
+		padding: 0 36px 24px 36px;
+	}
+	.reciter-hero__title {
+		font-family: 'Roboto Slab', sans-serif;
+		font-weight: 600;
+		color: #2e2e2e;
+		text-align: center;
+		margin: 0;
+		padding: 0;
+	}
+	.reciter-hero__social {
+		font-size: 140%;
+		list-style: none;
+		margin: 16px 0;
+		padding: 0;
+		text-align: center;
 
-      li {
-        display: inline;
+		li {
+			display: inline;
 
-        a {
-          color: inherit;
-          padding: 8px;
-          will-change: color;
-          transition: color $transition;
-          &:hover {
-            color: $theme.accent;
-          }
-        }
-      }
-    }
-    .reciter-hero__bio {
-      margin: 16px 0 0 0;
-      padding: 0;
-      max-height: 108px;
-      overflow: hidden;
-      position: relative;
-    }
-  }
+			a {
+				color: inherit;
+				padding: 8px;
+				will-change: color;
+				transition: color $transition;
+				&:hover {
+					color: $theme.accent;
+				}
+			}
+		}
+	}
+	.reciter-hero__bio {
+		margin: 16px 0 0 0;
+		padding: 0;
+		max-height: 108px;
+		overflow: hidden;
+		position: relative;
+	}
+}
 </style>

@@ -36,52 +36,52 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex';
-  import store from '@/store';
+import { mapGetters } from 'vuex';
+import store from '@/store';
 
-  async function fetchData(reciter, album) {
-    await Promise.all([
-      store.dispatch('reciters/fetchReciter', { reciter }),
-      store.dispatch('albums/fetchAlbum', { reciter, album })
-    ]);
-  }
+async function fetchData(reciter, album) {
+	await Promise.all([
+		store.dispatch('reciters/fetchReciter', { reciter }),
+		store.dispatch('albums/fetchAlbum', { reciter, album })
+	]);
+}
 
 
-  export default {
-    name: 'Album-Update',
-    methods: {
-      async uploadForm() {
-        const form = new FormData();
-        form.append('name', this.album.name);
-        form.append('artwork', this.album.artwork);
-        if (this.updatedArtwork) {
-          form.append('updatedArtwork', this.updatedArtwork);
-        }
-        await store.dispatch('albums/updateAlbum', { reciter: this.reciter.slug, album: this.album.year, form });
-        this.$router.push(`/reciters/${this.reciter.slug}`);
-      },
-      onFileChange(e) {
-        this.updatedArtwork = e.target.files[0];
-      }
-    },
-    computed: {
-      ...mapGetters({
-        reciter: 'reciters/reciter',
-        album: 'albums/album',
-      })
-    },
-    data() {
-      return {
-        updatedArtwork: null
-      };
-    },
-    async beforeRouteEnter(to, from, next) {
-      await fetchData(to.params.reciter, to.params.album);
-      next();
-    },
-    async beforeRouteUpdate(to, from, next) {
-      await fetchData(to.params.reciter, to.params.album);
-      next();
-    },
-  };
+export default {
+	name: 'Album-Update',
+	methods: {
+		async uploadForm() {
+			const form = new FormData();
+			form.append('name', this.album.name);
+			form.append('artwork', this.album.artwork);
+			if (this.updatedArtwork) {
+				form.append('updatedArtwork', this.updatedArtwork);
+			}
+			await store.dispatch('albums/updateAlbum', { reciter: this.reciter.slug, album: this.album.year, form });
+			this.$router.push(`/reciters/${this.reciter.slug}`);
+		},
+		onFileChange(e) {
+			this.updatedArtwork = e.target.files[0];
+		}
+	},
+	computed: {
+		...mapGetters({
+			reciter: 'reciters/reciter',
+			album: 'albums/album',
+		})
+	},
+	data() {
+		return {
+			updatedArtwork: null
+		};
+	},
+	async beforeRouteEnter(to, from, next) {
+		await fetchData(to.params.reciter, to.params.album);
+		next();
+	},
+	async beforeRouteUpdate(to, from, next) {
+		await fetchData(to.params.reciter, to.params.album);
+		next();
+	},
+};
 </script>

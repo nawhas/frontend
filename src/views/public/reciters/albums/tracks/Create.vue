@@ -65,62 +65,62 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex';
-  import store from '@/store';
+import { mapGetters } from 'vuex';
+import store from '@/store';
 
-  async function fetchData(reciter, album) {
-    await Promise.all([
-      store.dispatch('reciters/fetchReciter', { reciter }),
-      store.dispatch('albums/fetchAlbum', { reciter, album }),
-      store.dispatch('languages/fetchLanguages')
-    ]);
-  }
+async function fetchData(reciter, album) {
+	await Promise.all([
+		store.dispatch('reciters/fetchReciter', { reciter }),
+		store.dispatch('albums/fetchAlbum', { reciter, album }),
+		store.dispatch('languages/fetchLanguages')
+	]);
+}
 
-  export default {
-    name: 'Reciter-Create',
-    methods: {
-      async uploadForm() {
-        const form = new FormData();
-        form.append('audio', this.track.audio);
-        form.append('video', this.track.video);
-        form.append('name', this.track.name);
-        form.append('number', this.track.number);
-        const languages = [];
-        for (const language of this.track.language) {
-          languages.push(language.slug);
-        }
-        form.append('language', languages);
-        await store.dispatch('tracks/storeTrack', { reciter: this.reciter.slug, album: this.album.year, form });
-        this.$router.push(`/reciters/${this.reciter.slug}`);
-      },
-      onFileChange(e) {
-        if (e.target.name === 'audio') {
-          this.track.audio = e.target.files[0];
-        } else if (e.target.name === 'video') {
-          this.track.video = e.target.files[0];
-        }
-      },
-    },
-    computed: {
-      ...mapGetters({
-        reciter: 'reciters/reciter',
-        album: 'albums/album',
-        computedTrack: 'tracks/track',
-        languages: 'languages/languages',
-      })
-    },
-    data() {
-      return {
-        track: { name: null, video: null, audio: null, number: null, language: null },
-      };
-    },
-    async beforeRouteEnter(to, from, next) {
-      await fetchData(to.params.reciter, to.params.album);
-      next();
-    },
-    async beforeRouteUpdate(to, from, next) {
-      await fetchData(to.params.reciter, to.params.album);
-      next();
-    },
-  };
+export default {
+	name: 'Reciter-Create',
+	methods: {
+		async uploadForm() {
+			const form = new FormData();
+			form.append('audio', this.track.audio);
+			form.append('video', this.track.video);
+			form.append('name', this.track.name);
+			form.append('number', this.track.number);
+			const languages = [];
+			for (const language of this.track.language) {
+				languages.push(language.slug);
+			}
+			form.append('language', languages);
+			await store.dispatch('tracks/storeTrack', { reciter: this.reciter.slug, album: this.album.year, form });
+			this.$router.push(`/reciters/${this.reciter.slug}`);
+		},
+		onFileChange(e) {
+			if (e.target.name === 'audio') {
+				this.track.audio = e.target.files[0];
+			} else if (e.target.name === 'video') {
+				this.track.video = e.target.files[0];
+			}
+		},
+	},
+	computed: {
+		...mapGetters({
+			reciter: 'reciters/reciter',
+			album: 'albums/album',
+			computedTrack: 'tracks/track',
+			languages: 'languages/languages',
+		})
+	},
+	data() {
+		return {
+			track: { name: null, video: null, audio: null, number: null, language: null },
+		};
+	},
+	async beforeRouteEnter(to, from, next) {
+		await fetchData(to.params.reciter, to.params.album);
+		next();
+	},
+	async beforeRouteUpdate(to, from, next) {
+		await fetchData(to.params.reciter, to.params.album);
+		next();
+	},
+};
 </script>

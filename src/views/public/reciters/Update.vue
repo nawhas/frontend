@@ -44,54 +44,53 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex';
-  import store from '@/store';
+import { mapGetters } from 'vuex';
+import store from '@/store';
 
-  async function fetchData(reciter) {
-    await Promise.all([
-      store.dispatch('reciters/fetchReciter', { reciter })
-    ]);
-  }
+async function fetchData(reciter) {
+	await Promise.all([
+		store.dispatch('reciters/fetchReciter', { reciter })
+	]);
+}
 
-
-  export default {
-    name: 'Reciter-Create',
-    methods: {
-      async uploadForm() {
-        const form = new FormData();
-        form.append('name', this.reciter.name);
-        form.append('avatar', this.reciter.avatar);
-        if (this.updatedAvatar) {
-          form.append('updatedAvatar', this.updatedAvatar);
-        }
-        form.append('description', this.reciter.description);
-        await this.$store.dispatch('reciters/updateReciter', {
-          form,
-          reciter: this.reciter.slug
-        });
-        this.$router.push({ name: 'Reciters'});
-      },
-      onFileChange(e) {
-        this.updatedAvatar = e.target.files[0];
-      }
-    },
-    computed: {
-      ...mapGetters({
-        reciter: 'reciters/reciter',
-      })
-    },
-    data() {
-      return {
-        updatedAvatar: null
-      };
-    },
-    async beforeRouteEnter(to, from, next) {
-      await fetchData(to.params.reciter);
-      next();
-    },
-    async beforeRouteUpdate(to, from, next) {
-      await fetchData(to.params.reciter);
-      next();
-    },
-  };
+export default {
+	name: 'Reciter-Create',
+	methods: {
+		async uploadForm() {
+			const form = new FormData();
+			form.append('name', this.reciter.name);
+			form.append('avatar', this.reciter.avatar);
+			if (this.updatedAvatar) {
+				form.append('updatedAvatar', this.updatedAvatar);
+			}
+			form.append('description', this.reciter.description);
+			await this.$store.dispatch('reciters/updateReciter', {
+				form,
+				reciter: this.reciter.slug
+			});
+			this.$router.push({ name: 'Reciters'});
+		},
+		onFileChange(e) {
+			this.updatedAvatar = e.target.files[0];
+		}
+	},
+	computed: {
+		...mapGetters({
+			reciter: 'reciters/reciter',
+		})
+	},
+	data() {
+		return {
+			updatedAvatar: null
+		};
+	},
+	async beforeRouteEnter(to, from, next) {
+		await fetchData(to.params.reciter);
+		next();
+	},
+	async beforeRouteUpdate(to, from, next) {
+		await fetchData(to.params.reciter);
+		next();
+	},
+};
 </script>

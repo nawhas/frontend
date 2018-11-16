@@ -74,67 +74,67 @@
 </template>
 
 <script>
-  import VueAplayer from 'vue-aplayer';
-  import { mapGetters } from 'vuex';
-  import store from '@/store';
+import VueAplayer from 'vue-aplayer';
+import { mapGetters } from 'vuex';
+import store from '@/store';
 
-  async function fetchData(reciter, album, track) {
-    await Promise.all([
-      store.dispatch('reciters/fetchReciter', { reciter }),
-      store.dispatch('albums/fetchAlbum', { reciter, album }),
-      store.dispatch('tracks/fetchTrack', { reciter, album, track }),
-      store.dispatch('languages/fetchLanguages')
-    ]);
-  }
+async function fetchData(reciter, album, track) {
+	await Promise.all([
+		store.dispatch('reciters/fetchReciter', { reciter }),
+		store.dispatch('albums/fetchAlbum', { reciter, album }),
+		store.dispatch('tracks/fetchTrack', { reciter, album, track }),
+		store.dispatch('languages/fetchLanguages')
+	]);
+}
 
 
-  export default {
-    name: 'Track-Update',
-    components: {
-      'a-player': VueAplayer
-    },
-    methods: {
-      async uploadForm() {
-        const form = new FormData();
-        form.append('updatedAudio', this.updatedAudio);
-        form.append('video', this.track.video);
-        form.append('name', this.track.name);
-        form.append('number', this.track.number);
-        const languages = [];
-        for (const language of this.track.language.data) {
-          languages.push(language.slug);
-        }
-        form.append('language', languages);
-        await store.dispatch('tracks/updateTrack', { reciter: this.reciter.slug, album: this.album.year, track: this.track.id, form });
-        this.$router.push({
-          name: 'Track-Page',
-          params: { reciter: this.reciter.slug, album: this.album.year, track: this.track.slug }
-        });
-      },
-      onFileChange(e) {
-        this.updatedAudio = e.target.files[0];
-      }
-    },
-    computed: {
-      ...mapGetters({
-        reciter: 'reciters/reciter',
-        album: 'albums/album',
-        track: 'tracks/track',
-        languages: 'languages/languages',
-      })
-    },
-    data() {
-      return {
-        updatedAudio: null
-      };
-    },
-    async beforeRouteEnter(to, from, next) {
-      await fetchData(to.params.reciter, to.params.album, to.params.track);
-      next();
-    },
-    async beforeRouteUpdate(to, from, next) {
-      await fetchData(to.params.reciter, to.params.album, to.params.track);
-      next();
-    },
-  };
+export default {
+	name: 'Track-Update',
+	components: {
+		'a-player': VueAplayer
+	},
+	methods: {
+		async uploadForm() {
+			const form = new FormData();
+			form.append('updatedAudio', this.updatedAudio);
+			form.append('video', this.track.video);
+			form.append('name', this.track.name);
+			form.append('number', this.track.number);
+			const languages = [];
+			for (const language of this.track.language.data) {
+				languages.push(language.slug);
+			}
+			form.append('language', languages);
+			await store.dispatch('tracks/updateTrack', { reciter: this.reciter.slug, album: this.album.year, track: this.track.id, form });
+			this.$router.push({
+				name: 'Track-Page',
+				params: { reciter: this.reciter.slug, album: this.album.year, track: this.track.slug }
+			});
+		},
+		onFileChange(e) {
+			this.updatedAudio = e.target.files[0];
+		}
+	},
+	computed: {
+		...mapGetters({
+			reciter: 'reciters/reciter',
+			album: 'albums/album',
+			track: 'tracks/track',
+			languages: 'languages/languages',
+		})
+	},
+	data() {
+		return {
+			updatedAudio: null
+		};
+	},
+	async beforeRouteEnter(to, from, next) {
+		await fetchData(to.params.reciter, to.params.album, to.params.track);
+		next();
+	},
+	async beforeRouteUpdate(to, from, next) {
+		await fetchData(to.params.reciter, to.params.album, to.params.track);
+		next();
+	},
+};
 </script>
