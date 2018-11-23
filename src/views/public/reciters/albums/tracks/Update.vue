@@ -114,7 +114,7 @@ export default {
       });
     },
     onFileChange(e) {
-      this.updatedAudio = e.target.files[0];
+      [this.updatedAudio] = e.target.files;
     },
   },
   computed: {

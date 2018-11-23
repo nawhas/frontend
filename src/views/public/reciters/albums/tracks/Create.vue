@@ -95,9 +95,9 @@ export default {
     },
     onFileChange(e) {
       if (e.target.name === 'audio') {
-        this.track.audio = e.target.files[0];
+        [this.track.audio] = e.target.files;
       } else if (e.target.name === 'video') {
-        this.track.video = e.target.files[0];
+        [this.track.video] = e.target.files;
       }
     },
   },

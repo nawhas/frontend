@@ -12,7 +12,9 @@
     </section>
     <section class="page-section" id="all-reciters-section">
       <h5>All Reciters</h5>
-      <v-btn primary flat v-if="this.$store.getters['auth/isAdmin']" @click="createNewReciter">Create New Reciter</v-btn>
+      <v-btn primary flat v-if="this.$store.getters['auth/isAdmin']" @click="createNewReciter">
+        Create New Reciter
+      </v-btn>
       <v-card>
         <v-container class="pa-0" fluid>
           <v-layout row wrap>
@@ -26,9 +28,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapGetters } from 'vuex';
-import ReciterCard from '@/components/ReciterCard';
+import ReciterCard from '@/components/ReciterCard.vue';
 import store from '@/store';
 
 async function fetchData() {

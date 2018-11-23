@@ -1,4 +1,4 @@
-import client from '../../services/client.js';
+import client from '../../services/client';
 
 const state = {
   popularReciters: null,

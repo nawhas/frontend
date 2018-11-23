@@ -28,11 +28,11 @@
   </div>
 </template>
 
-<script>
-import HeroBanner from '@/components/HeroBanner';
-import HeroQuote from '@/components/HeroQuote';
-import ReciterCard from '@/components/ReciterCard';
-import TrackCard from '@/components/TrackCard';
+<script lang="ts">
+import HeroBanner from '@/components/HeroBanner.vue';
+import HeroQuote from '@/components/HeroQuote.vue';
+import ReciterCard from '@/components/ReciterCard.vue';
+import TrackCard from '@/components/TrackCard.vue';
 import { mapGetters } from 'vuex';
 import store from '@/store';
 
@@ -69,6 +69,6 @@ export default {
 
 <style lang="scss" scoped>
 .title {
-	margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 </style>

@@ -51,7 +51,7 @@ export default {
       this.$router.push({ name: 'Reciters' });
     },
     onFileChange(e) {
-      this.reciter.avatar = e.target.files[0];
+      [this.reciter.avatar] = e.target.files;
     },
   },
   data() {

@@ -71,12 +71,16 @@ const router = new Router({
         {
           path: 'reciters/:reciter/albums/:album/tracks/:track/lyrics/create',
           name: 'Lyric Create',
-          component: () => import(/* webpackChunkName: "reciters" */'./views/public/reciters/albums/tracks/lyrics/Create.vue'),
+          component: () => (
+            import(/* webpackChunkName: "reciters" */'./views/public/reciters/albums/tracks/lyrics/Create.vue')
+          ),
         },
         {
           path: 'reciters/:reciter/albums/:album/tracks/:track/lyrics/:lyric/update',
           name: 'Lyric-Update',
-          component: () => import(/* webpackChunkName: "reciters" */'./views/public/reciters/albums/tracks/lyrics/Update.vue'),
+          component: () => (
+            import(/* webpackChunkName: "reciters" */'./views/public/reciters/albums/tracks/lyrics/Update.vue')
+          ),
         },
         {
           path: 'topics',

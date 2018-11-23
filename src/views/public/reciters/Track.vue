@@ -109,10 +109,6 @@
 import { mapGetters } from 'vuex';
 import Aplayer from 'vue-aplayer';
 import Vibrant from 'node-vibrant';
-import HeroBanner from '@/components/HeroBanner';
-import ReciterCard from '@/components/ReciterCard';
-import TrackCard from '@/components/TrackCard';
-import Album from '@/components/Album';
 import store from '@/store';
 
 async function fetchData(reciter, album, track) {
@@ -124,10 +120,6 @@ async function fetchData(reciter, album, track) {
 export default {
   name: 'TrackPage',
   components: {
-    HeroBanner,
-    TrackCard,
-    ReciterCard,
-    Album,
     Aplayer,
   },
   data() {
@@ -161,7 +153,7 @@ export default {
   methods: {
     goToAddTracks() {
       const reciter = this.track.reciter.slug;
-      const year = this.track.album.year;
+      const { year } = this.track.album;
       const track = this.track.slug;
       this.$router.push(`/reciters/${reciter}/albums/${year}/tracks/${track}/lyrics/create`);
     },

@@ -1,4 +1,4 @@
-import client from '../../services/client.js';
+import client from '../../services/client';
 
 const state = {
   tracks: null,
@@ -33,19 +33,27 @@ const actions = {
     });
   },
   async fetchTrack({ commit }, payload) {
-    const response = await client.get(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`);
+    const response = await client.get(
+      `/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`,
+    );
     commit('FETCH_TRACK', {
       data: response.data,
     });
   },
   async storeTrack({ commit }, payload) {
-    const response = await client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks`, payload.form);
+    const response = await client.post(
+      `/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks`,
+      payload.form,
+    );
     commit('STORE_TRACK', {
       data: response.data,
     });
   },
   async updateTrack({ commit }, payload) {
-    const response = await client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`, payload.form);
+    const response = await client.post(
+      `/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`,
+      payload.form,
+    );
     commit('UPDATE_TRACK', {
       data: response.data,
     });

@@ -21,9 +21,10 @@
           <!--</ul>-->
           <p class="reciter-hero__bio">{{ reciter.description }}</p>
           <v-btn
-            v-if="this.$store.getters['auth/isAdmin']"
-            @click="goToEditReciter"
-          >Update Reciter</v-btn>
+              v-if="this.$store.getters['auth/isAdmin']"
+              @click="goToEditReciter"
+          >Update Reciter
+          </v-btn>
         </v-card>
       </div>
     </div>
@@ -32,7 +33,7 @@
       <v-container grid-list-lg class="pa-0" fluid>
         <v-layout row wrap>
           <v-flex xs12 sm6 md4 v-for="track in popularTracks" v-bind:key="track.id">
-            <track-card v-bind="track" :show-reciter="false" ></track-card>
+            <track-card v-bind="track" :show-reciter="false"></track-card>
           </v-flex>
         </v-layout>
       </v-container>
@@ -47,12 +48,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapGetters } from 'vuex';
-import HeroBanner from '@/components/HeroBanner';
-import ReciterCard from '@/components/ReciterCard';
-import TrackCard from '@/components/TrackCard';
-import Album from '@//components/Album';
+import HeroBanner from '@/components/HeroBanner.vue';
+import ReciterCard from '@/components/ReciterCard.vue';
+import TrackCard from '@/components/TrackCard.vue';
+import Album from '@//components/Album.vue';
 import store from '@/store';
 
 async function fetchData(reciter) {
@@ -66,9 +67,7 @@ async function fetchData(reciter) {
 export default {
   name: 'Reciter-Profile',
   components: {
-    HeroBanner,
     TrackCard,
-    ReciterCard,
     Album,
   },
   async beforeRouteEnter(to, from, next) {
@@ -102,70 +101,70 @@ export default {
 @import '../../../styles/_variables.styl';
 
 .reciter-hero {
-	.reciter-hero__ribbon {
-		width: 100%;
-		height: 220px;
-		margin-bottom: -220px;
-		background: linear-gradient(to bottom right, #E90500, #FA6000);
-	}
-	.reciter-hero__content {
-		padding: 80px 120px 24px 120px;
-	}
-	.reciter-hero__avatar {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: relative;
-		top: -80px;
-		margin-bottom: -56px;
+  .reciter-hero__ribbon {
+    width: 100%;
+    height: 220px;
+    margin-bottom: -220px;
+    background: linear-gradient(to bottom right, #E90500, #FA6000);
+  }
+  .reciter-hero__content {
+    padding: 80px 120px 24px 120px;
+  }
+  .reciter-hero__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: -80px;
+    margin-bottom: -56px;
 
-		.avatar {
-			box-sizing: content-box;
-			border: 5px solid white;
-		}
-	}
-	.reciter-hero__card {
-		margin-top: 36px;
-		width: 100%;
-		min-height: 20px;
-		position: relative;
-		padding: 0 36px 24px 36px;
-	}
-	.reciter-hero__title {
-		font-family: 'Roboto Slab', sans-serif;
-		font-weight: 600;
-		color: #2e2e2e;
-		text-align: center;
-		margin: 0;
-		padding: 0;
-	}
-	.reciter-hero__social {
-		font-size: 140%;
-		list-style: none;
-		margin: 16px 0;
-		padding: 0;
-		text-align: center;
+    .avatar {
+      box-sizing: content-box;
+      border: 5px solid white;
+    }
+  }
+  .reciter-hero__card {
+    margin-top: 36px;
+    width: 100%;
+    min-height: 20px;
+    position: relative;
+    padding: 0 36px 24px 36px;
+  }
+  .reciter-hero__title {
+    font-family: 'Roboto Slab', sans-serif;
+    font-weight: 600;
+    color: #2e2e2e;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+  .reciter-hero__social {
+    font-size: 140%;
+    list-style: none;
+    margin: 16px 0;
+    padding: 0;
+    text-align: center;
 
-		li {
-			display: inline;
+    li {
+      display: inline;
 
-			a {
-				color: inherit;
-				padding: 8px;
-				will-change: color;
-				transition: color $transition;
-				&:hover {
-					color: $theme.accent;
-				}
-			}
-		}
-	}
-	.reciter-hero__bio {
-		margin: 16px 0 0 0;
-		padding: 0;
-		max-height: 108px;
-		overflow: hidden;
-		position: relative;
-	}
+      a {
+        color: inherit;
+        padding: 8px;
+        will-change: color;
+        transition: color $transition;
+        &:hover {
+          color: $theme.accent;
+        }
+      }
+    }
+  }
+  .reciter-hero__bio {
+    margin: 16px 0 0 0;
+    padding: 0;
+    max-height: 108px;
+    overflow: hidden;
+    position: relative;
+  }
 }
 </style>

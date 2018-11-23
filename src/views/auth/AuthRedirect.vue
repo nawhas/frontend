@@ -11,7 +11,7 @@ import QueryString from 'query-string';
 export default {
   name: 'auth-redirect',
   created() {
-    const opts = QueryString.parse(location.search);
+    const opts = QueryString.parse(window.location.search);
     if (opts.type === 'signup') {
       this.$store.dispatch('auth/redirectToSignup');
     } else {

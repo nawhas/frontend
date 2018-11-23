@@ -1,12 +1,12 @@
 <template>
   <v-app id="keep">
     <v-navigation-drawer
-	      v-model="drawer"
-	      fixed
-	      clipped
-	      floating
-	      width="250"
-	      app>
+        v-model="drawer"
+        fixed
+        clipped
+        floating
+        width="250"
+        app>
       <div v-for="(item, index) in navigation" :key="item.group">
         <v-list class="nav">
           <v-list-tile class="nav__tile" v-for="link in item.children"
@@ -28,13 +28,16 @@
     <v-toolbar color="white" app fixed clipped-left flat>
       <v-toolbar-side-icon @click.native="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown" />
       <span class="title mr-5">
-        <img class="masthead__logo masthead__logo--desktop" src="../assets/logo.svg" :height="$vuetify.breakpoint.smAndDown ? 32 : 38"
+        <img class="masthead__logo masthead__logo--desktop" src="../assets/logo.svg"
+             :height="$vuetify.breakpoint.smAndDown ? 32 : 38"
              onerror="this.src='../assets/logo.png'" alt="Nawhas.com">
       </span>
       <v-spacer></v-spacer>
       <template v-if="$store.getters['auth/authenticated']">
         <v-btn icon @click="$store.dispatch('auth/logout')">logout</v-btn>
-        <v-btn icon to="/auth/redirect"><v-icon>account_circle</v-icon></v-btn>
+        <v-btn icon to="/auth/redirect">
+          <v-icon>account_circle</v-icon>
+        </v-btn>
       </template>
       <template v-else>
         <v-btn>Login</v-btn>
@@ -49,54 +52,56 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import navItems from '@/data/navigation';
 
 @Component
 export default class PublicVuetify extends Vue {
-	private items = navItems;
+  private items = navItems;
 
-	private drawer: boolean | null = null;
+  private drawer: boolean | null = null;
 
-	get navigation() {
-	  // return filtered nav list based on role
-	  const items: object[] = [];
-	  const role = this.$store.getters['auth/userRole'];
+  get navigation() {
+    // return filtered nav list based on role
+    const items: object[] = [];
+    const role = this.$store.getters['auth/userRole'];
 
-	  for (const group of this.items) {
-	    const children = [];
-	    group.children.forEach((child) => {
-	      if (child.role && child.role !== role) {
-	        return;
-	      }
-	      children.push(child);
-	    });
-	    group.children = children;
+    for (const group of this.items) {
+      const children = [];
+      group.children.forEach((child) => {
+        if (child.role && child.role !== role) {
+          return;
+        }
+        children.push(child);
+      });
+      group.children = children;
 
-	    if (group.children.length > 0) {
-	      items.push(group);
-	    }
-	  }
+      if (group.children.length > 0) {
+        items.push(group);
+      }
+    }
 
-	  return items;
-	}
+    return items;
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .main-container {
-	padding: 0;
+  padding: 0;
 }
+
 .nav__tile__action {
-	justify-content: center;
+  justify-content: center;
 }
+
 .nav__tile--active {
-	.nav__tile__action {
-		color: var(--v-primary-base);
-	}
-	.nav__tile__content {
-		font-weight: bold;
-		color: var(--v-primary-base);
-	}
+  .nav__tile__action {
+    color: var(--v-primary-base);
+  }
+  .nav__tile__content {
+    font-weight: bold;
+    color: var(--v-primary-base);
+  }
 }
 </style>

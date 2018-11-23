@@ -61,7 +61,7 @@ export default {
       this.$router.push(`/reciters/${this.reciter.slug}`);
     },
     onFileChange(e) {
-      this.updatedArtwork = e.target.files[0];
+      [this.updatedArtwork] = e.target.files;
     },
   },
   computed: {

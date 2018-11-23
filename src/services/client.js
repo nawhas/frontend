@@ -7,28 +7,29 @@ class Client {
     this.base = API_DOMAIN;
   }
 
-  get(url, params = {}) {
-    return this.request('GET', url, params);
+  get(path, params = {}) {
+    return this.request('GET', path, params);
   }
 
-  post(url, data = {}) {
-    return this.request('POST', url, data);
+  post(path, data = {}) {
+    return this.request('POST', path, data);
   }
 
-  put(url, data = {}) {
-    return this.request('PUT', url, data);
+  put(path, data = {}) {
+    return this.request('PUT', path, data);
   }
 
-  patch(url, data = {}) {
-    return this.request('PATCH', url, data);
+  patch(path, data = {}) {
+    return this.request('PATCH', path, data);
   }
 
-  delete(url, data = {}) {
-    return this.request('DELETE', url, data);
+  delete(path, data = {}) {
+    return this.request('DELETE', path, data);
   }
 
-  request(method = 'GET', url, data = {}) {
+  request(method = 'GET', path, data = {}) {
     const config = { method };
+    let url = path;
 
     if (url.startsWith('/')) {
       url = url.substr(1);
