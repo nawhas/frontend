@@ -8,9 +8,9 @@ Vue.use(VueProgressBar, {
   transition: {
     speed: '0.3s',
     opacity: '0.6s',
-    termination: 0
+    termination: 0,
   },
   autoRevert: false,
   location: 'top',
-  inverse: false
+  inverse: false,
 });

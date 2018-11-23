@@ -22,7 +22,7 @@ import Vibrant from 'node-vibrant';
 export default {
   name: 'reciter-card',
   props: [
-    'id', 'name', 'slug', 'albumCount', 'avatar', 'createdAt', 'updatedAt', 'featured'
+    'id', 'name', 'slug', 'albumCount', 'avatar', 'createdAt', 'updatedAt', 'featured',
   ],
   mounted() {
     if (this.featured !== undefined) {
@@ -45,7 +45,7 @@ export default {
         this.background = swatch.getHex();
         this.textColor = swatch.getBodyTextColor();
       });
-    }
+    },
   },
   data() {
     if (this.featured !== undefined) {
@@ -66,8 +66,8 @@ export default {
         'reciter-card': true,
         'reciter-card--featured': this.featured !== undefined,
       };
-    }
-  }
+    },
+  },
 };
 </script>
 

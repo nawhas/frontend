@@ -40,24 +40,24 @@
 
 <script>
 export default {
-	name: 'Reciter-Create',
-	methods: {
-		async uploadForm() {
-			const form = new FormData();
-			form.append('name', this.reciter.name);
-			form.append('avatar', this.reciter.avatar);
-			form.append('description', this.reciter.description);
-			await this.$store.dispatch('reciters/storeReciter', { form: form });
-			this.$router.push({ name: 'Reciters'});
-		},
-		onFileChange(e) {
-			this.reciter.avatar = e.target.files[0];
-		},
-	},
-	data() {
-		return {
-			reciter: { name: null, avatar: null, description: null },
-		};
-	},
+  name: 'Reciter-Create',
+  methods: {
+    async uploadForm() {
+      const form = new FormData();
+      form.append('name', this.reciter.name);
+      form.append('avatar', this.reciter.avatar);
+      form.append('description', this.reciter.description);
+      await this.$store.dispatch('reciters/storeReciter', { form });
+      this.$router.push({ name: 'Reciters' });
+    },
+    onFileChange(e) {
+      this.reciter.avatar = e.target.files[0];
+    },
+  },
+  data() {
+    return {
+      reciter: { name: null, avatar: null, description: null },
+    };
+  },
 };
 </script>

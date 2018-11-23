@@ -33,37 +33,37 @@ import HeroBanner from '@/components/HeroBanner';
 import HeroQuote from '@/components/HeroQuote';
 import ReciterCard from '@/components/ReciterCard';
 import TrackCard from '@/components/TrackCard';
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'vuex';
 import store from '@/store';
 
 async function fetchData() {
-	await Promise.all([
-		store.dispatch('popular/fetchPopularReciters', {limit: 6}),
-		store.dispatch('popular/fetchPopularTracks', {limit: 6})
-	]);
+  await Promise.all([
+    store.dispatch('popular/fetchPopularReciters', { limit: 6 }),
+    store.dispatch('popular/fetchPopularTracks', { limit: 6 }),
+  ]);
 }
 export default {
-	name: 'Home',
-	components: {
-		HeroBanner,
-		HeroQuote,
-		ReciterCard,
-		TrackCard,
-	},
-	async beforeRouteEnter(to, from, next) {
-		await fetchData();
-		next();
-	},
-	async beforeRouteUpdate(to, from, next) {
-		await fetchData();
-		next();
-	},
-	computed: {
-		...mapGetters({
-			popularReciters: 'popular/popularReciters',
-			popularTracks: 'popular/popularTracks',
-		})
-	},
+  name: 'Home',
+  components: {
+    HeroBanner,
+    HeroQuote,
+    ReciterCard,
+    TrackCard,
+  },
+  async beforeRouteEnter(to, from, next) {
+    await fetchData();
+    next();
+  },
+  async beforeRouteUpdate(to, from, next) {
+    await fetchData();
+    next();
+  },
+  computed: {
+    ...mapGetters({
+      popularReciters: 'popular/popularReciters',
+      popularTracks: 'popular/popularTracks',
+    }),
+  },
 };
 </script>
 

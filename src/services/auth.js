@@ -1,5 +1,5 @@
 import QueryString from 'query-string';
-import {API_DOMAIN, APP_DOMAIN, CLIENT_ID} from '../config';
+import { API_DOMAIN, APP_DOMAIN, CLIENT_ID } from '../config';
 
 export function getLoginUrl() {
   const params = {
@@ -12,7 +12,7 @@ export function getLoginUrl() {
 }
 
 export function getSignupUrl() {
-  const params = {redirect: getLoginUrl()};
+  const params = { redirect: getLoginUrl() };
   return `${API_DOMAIN}/register?${QueryString.stringify(params)}`;
 }
 
@@ -41,5 +41,5 @@ export default {
   getSignupUrl,
   getParameterByName,
   setAccessToken,
-  clearAccessToken
+  clearAccessToken,
 };

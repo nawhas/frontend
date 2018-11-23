@@ -17,7 +17,7 @@ export default {
     } else {
       this.$store.dispatch('auth/redirectToLogin');
     }
-  }
+  },
 };
 </script>
 

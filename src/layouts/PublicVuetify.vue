@@ -55,29 +55,30 @@ import navItems from '@/data/navigation';
 @Component
 export default class PublicVuetify extends Vue {
 	private items = navItems;
+
 	private drawer: boolean | null = null;
 
 	get navigation() {
-		// return filtered nav list based on role
-		const items: object[] = [];
-		const role = this.$store.getters['auth/userRole'];
+	  // return filtered nav list based on role
+	  const items: object[] = [];
+	  const role = this.$store.getters['auth/userRole'];
 
-		for (const group of this.items) {
-			const children = [];
-			group.children.forEach((child) => {
-				if (child.role && child.role !== role) {
-					return;
-				}
-				children.push(child);
-			});
-			group.children = children;
+	  for (const group of this.items) {
+	    const children = [];
+	    group.children.forEach((child) => {
+	      if (child.role && child.role !== role) {
+	        return;
+	      }
+	      children.push(child);
+	    });
+	    group.children = children;
 
-			if (group.children.length > 0) {
-				items.push(group);
-			}
-		}
+	    if (group.children.length > 0) {
+	      items.push(group);
+	    }
+	  }
 
-		return items;
+	  return items;
 	}
 }
 </script>

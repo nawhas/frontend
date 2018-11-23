@@ -116,97 +116,98 @@ import Album from '@/components/Album';
 import store from '@/store';
 
 async function fetchData(reciter, album, track) {
-	await Promise.all([
-		store.dispatch('tracks/fetchTrack', { reciter, album, track }),
-	]);
+  await Promise.all([
+    store.dispatch('tracks/fetchTrack', { reciter, album, track }),
+  ]);
 }
 
 export default {
-	name: 'TrackPage',
-	components: {
-		HeroBanner,
-		TrackCard,
-		ReciterCard,
-		Album,
-		Aplayer
-	},
-	data() {
-		return {
-			background: '#222',
-			textColor: '#fff',
-			videoId: null,
-			startTime: null,
-			active: null,
-			text: null
-		};
-	},
-	computed: {
-		...mapGetters({
-			track: 'tracks/track',
-		}),
-		isAdmin() {
-			return this.$store.getters['auth/isAdmin'];
-		}
-	},
-	created() {
-		if (this.track.video) {
-			this.videoId = this.$youtube.getIdFromURL(this.track.video);
-			this.startTime = this.$youtube.getTimeFromURL(this.track.video);
-		} else {
-			this.videoId = null;
-			this.startTime = null;
-		}
-		this.setBackgroundFromImage();
-	},
-	methods: {
-		goToAddTracks() {
-			const reciter = this.track.reciter.slug;
-			const year = this.track.album.year;
-			const track = this.track.slug;
-			this.$router.push(`/reciters/${reciter}/albums/${year}/tracks/${track}/lyrics/create`);
-		},
-		goToEditTrack() {
-			this.$router.push({
-				name: 'Track-Update',
-				params: {
-					reciter: this.track.reciter.slug,
-					album: this.track.album.year,
-					track: this.track.slug
-				},
-			});
-		},
-		goToEditLyric(lyric) {
-			this.$router.push({ name: 'Lyric-Update',
-				params: {
-					reciter: this.track.reciter.slug,
-					album: this.track.album.year,
-					track: this.track.slug,
-					lyric: lyric.id
-				}
-			});
-		},
-		setBackgroundFromImage() {
-			if (!this.track) {
-				return;
-			}
-			Vibrant.from(this.track.album.artwork).getPalette().then((palette) => {
-				const swatch = palette.DarkMuted;
-				if (!swatch) {
-					return;
-				}
-				this.background = swatch.getHex();
-				this.textColor = swatch.getBodyTextColor();
-			});
-		},
-	},
-	async beforeRouteEnter(to, from, next) {
-		await fetchData(to.params.reciter, to.params.album, to.params.track);
-		next();
-	},
-	async beforeRouteUpdate(to, from, next) {
-		await fetchData(to.params.reciter, to.params.album, to.params.track);
-		next();
-	},
+  name: 'TrackPage',
+  components: {
+    HeroBanner,
+    TrackCard,
+    ReciterCard,
+    Album,
+    Aplayer,
+  },
+  data() {
+    return {
+      background: '#222',
+      textColor: '#fff',
+      videoId: null,
+      startTime: null,
+      active: null,
+      text: null,
+    };
+  },
+  computed: {
+    ...mapGetters({
+      track: 'tracks/track',
+    }),
+    isAdmin() {
+      return this.$store.getters['auth/isAdmin'];
+    },
+  },
+  created() {
+    if (this.track.video) {
+      this.videoId = this.$youtube.getIdFromURL(this.track.video);
+      this.startTime = this.$youtube.getTimeFromURL(this.track.video);
+    } else {
+      this.videoId = null;
+      this.startTime = null;
+    }
+    this.setBackgroundFromImage();
+  },
+  methods: {
+    goToAddTracks() {
+      const reciter = this.track.reciter.slug;
+      const year = this.track.album.year;
+      const track = this.track.slug;
+      this.$router.push(`/reciters/${reciter}/albums/${year}/tracks/${track}/lyrics/create`);
+    },
+    goToEditTrack() {
+      this.$router.push({
+        name: 'Track-Update',
+        params: {
+          reciter: this.track.reciter.slug,
+          album: this.track.album.year,
+          track: this.track.slug,
+        },
+      });
+    },
+    goToEditLyric(lyric) {
+      this.$router.push({
+        name: 'Lyric-Update',
+        params: {
+          reciter: this.track.reciter.slug,
+          album: this.track.album.year,
+          track: this.track.slug,
+          lyric: lyric.id,
+        },
+      });
+    },
+    setBackgroundFromImage() {
+      if (!this.track) {
+        return;
+      }
+      Vibrant.from(this.track.album.artwork).getPalette().then((palette) => {
+        const swatch = palette.DarkMuted;
+        if (!swatch) {
+          return;
+        }
+        this.background = swatch.getHex();
+        this.textColor = swatch.getBodyTextColor();
+      });
+    },
+  },
+  async beforeRouteEnter(to, from, next) {
+    await fetchData(to.params.reciter, to.params.album, to.params.track);
+    next();
+  },
+  async beforeRouteUpdate(to, from, next) {
+    await fetchData(to.params.reciter, to.params.album, to.params.track);
+    next();
+  },
 };
 </script>
 

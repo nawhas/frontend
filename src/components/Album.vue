@@ -67,7 +67,7 @@ export default {
     },
     goToCreateTracks() {
       this.$router.push(`/reciters/${this.reciterSlug}/albums/${this.year}/tracks/create`);
-    }
+    },
   },
   data() {
     return {
@@ -86,11 +86,11 @@ export default {
           align: 'left',
           value: 'reciter.name',
         },
-//        {
-//          text: 'Topics',
-//          align: 'left',
-//          value: 'topics',
-//        },
+        //        {
+        //          text: 'Topics',
+        //          align: 'left',
+        //          value: 'topics',
+        //        },
       ],
       background: '#444444',
       textColor: 'white',

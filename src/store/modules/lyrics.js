@@ -1,13 +1,11 @@
-import client from "../../services/client.js";
+import client from '../../services/client.js';
 
 const state = {
   lyric: null,
 };
 
 const getters = {
-  lyric: state => {
-    return state.lyric;
-  },
+  lyric: state => state.lyric,
 };
 
 const mutations = {
@@ -23,22 +21,22 @@ const mutations = {
 };
 
 const actions = {
-  async fetchLyric({commit}, payload) {
+  async fetchLyric({ commit }, payload) {
     const response = await client.get(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}/lyrics/${payload.lyric}`);
     commit('FETCH_LYRIC', {
-      data: response.data
+      data: response.data,
     });
   },
-  async storeLyric({commit}, payload) {
+  async storeLyric({ commit }, payload) {
     const response = await client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}/lyrics`, payload.form);
     commit('STORE_LYRIC', {
-      data: response.data
+      data: response.data,
     });
   },
-  async updateLyric({commit}, payload) {
+  async updateLyric({ commit }, payload) {
     const response = await client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}/lyrics/${payload.lyric}`, payload.form);
     commit('UPDATE_LYRIC', {
-      data: response.data
+      data: response.data,
     });
   },
 };
@@ -48,5 +46,5 @@ export default {
   mutations,
   actions,
   getters,
-  namespaced: true
+  namespaced: true,
 };

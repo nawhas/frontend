@@ -45,44 +45,44 @@ import { mapGetters } from 'vuex';
 import store from '@/store';
 
 async function fetchData(reciter) {
-	await Promise.all([
-		store.dispatch('reciters/fetchReciter', { reciter })
-	]);
+  await Promise.all([
+    store.dispatch('reciters/fetchReciter', { reciter }),
+  ]);
 }
 
 
 export default {
-	name: 'Album-Create',
-	methods: {
-		async uploadForm() {
-			const form = new FormData();
-			form.append('name', this.album.name);
-			form.append('artwork', this.album.artwork);
-			form.append('year', this.album.year);
-			await store.dispatch('albums/storeAlbum', { reciter: this.reciter.slug, form });
-			this.$router.push(`/reciters/${this.reciter.slug}`);
-		},
-		onFileChange(e) {
-			this.album.artwork = e.target.files[0];
-		}
-	},
-	computed: {
-		...mapGetters({
-			reciter: 'reciters/reciter',
-		})
-	},
-	data() {
-		return {
-			album: { name: null, artwork: null, year: null },
-		};
-	},
-	async beforeRouteEnter(to, from, next) {
-		await fetchData(to.params.reciter);
-		next();
-	},
-	async beforeRouteUpdate(to, from, next) {
-		await fetchData(to.params.reciter);
-		next();
-	},
+  name: 'Album-Create',
+  methods: {
+    async uploadForm() {
+      const form = new FormData();
+      form.append('name', this.album.name);
+      form.append('artwork', this.album.artwork);
+      form.append('year', this.album.year);
+      await store.dispatch('albums/storeAlbum', { reciter: this.reciter.slug, form });
+      this.$router.push(`/reciters/${this.reciter.slug}`);
+    },
+    onFileChange(e) {
+      this.album.artwork = e.target.files[0];
+    },
+  },
+  computed: {
+    ...mapGetters({
+      reciter: 'reciters/reciter',
+    }),
+  },
+  data() {
+    return {
+      album: { name: null, artwork: null, year: null },
+    };
+  },
+  async beforeRouteEnter(to, from, next) {
+    await fetchData(to.params.reciter);
+    next();
+  },
+  async beforeRouteUpdate(to, from, next) {
+    await fetchData(to.params.reciter);
+    next();
+  },
 };
 </script>

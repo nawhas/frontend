@@ -32,35 +32,35 @@ import ReciterCard from '@/components/ReciterCard';
 import store from '@/store';
 
 async function fetchData() {
-	await Promise.all([
-		store.dispatch('reciters/fetchReciters'),
-		store.dispatch('popular/fetchPopularReciters', {limit: 6})
-	]);
+  await Promise.all([
+    store.dispatch('reciters/fetchReciters'),
+    store.dispatch('popular/fetchPopularReciters', { limit: 6 }),
+  ]);
 }
 
 export default {
-	name: 'Reciters',
-	components: {
-		ReciterCard,
-	},
-	methods: {
-		createNewReciter() {
-			this.$router.push('/reciters/create');
-		},
-	},
-	computed: {
-		...mapGetters({
-			reciters: 'reciters/reciters',
-			popularReciters: 'popular/popularReciters',
-		})
-	},
-	async beforeRouteEnter(to, from, next) {
-		await fetchData();
-		next();
-	},
-	async beforeRouteUpdate(to, from, next) {
-		await fetchData();
-		next();
-	},
+  name: 'Reciters',
+  components: {
+    ReciterCard,
+  },
+  methods: {
+    createNewReciter() {
+      this.$router.push('/reciters/create');
+    },
+  },
+  computed: {
+    ...mapGetters({
+      reciters: 'reciters/reciters',
+      popularReciters: 'popular/popularReciters',
+    }),
+  },
+  async beforeRouteEnter(to, from, next) {
+    await fetchData();
+    next();
+  },
+  async beforeRouteUpdate(to, from, next) {
+    await fetchData();
+    next();
+  },
 };
 </script>

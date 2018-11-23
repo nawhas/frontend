@@ -56,44 +56,44 @@ import Album from '@//components/Album';
 import store from '@/store';
 
 async function fetchData(reciter) {
-	await Promise.all([
-		store.dispatch('albums/fetchAlbums', { reciter }),
-		store.dispatch('reciters/fetchReciter', { reciter })
-	]);
-	await store.dispatch('popular/fetchPopularTracks', {limit: 6, reciterId: store.getters['reciters/reciter'].id });
+  await Promise.all([
+    store.dispatch('albums/fetchAlbums', { reciter }),
+    store.dispatch('reciters/fetchReciter', { reciter }),
+  ]);
+  await store.dispatch('popular/fetchPopularTracks', { limit: 6, reciterId: store.getters['reciters/reciter'].id });
 }
 
 export default {
-	name: 'Reciter-Profile',
-	components: {
-		HeroBanner,
-		TrackCard,
-		ReciterCard,
-		Album,
-	},
-	async beforeRouteEnter(to, from, next) {
-		await fetchData(to.params.reciter);
-		next();
-	},
-	async beforeRouteUpdate(to, from, next) {
-		await fetchData(to.params.reciter);
-		next();
-	},
-	computed: {
-		...mapGetters({
-			reciter: 'reciters/reciter',
-			albums: 'albums/albums',
-			popularTracks: 'popular/popularTracks',
-		})
-	},
-	methods: {
-		goToEditReciter() {
-			this.$router.push(`/reciters/${this.reciter.slug}/update`);
-		},
-		createAlbum() {
-			this.$router.push(`/reciters/${this.reciter.slug}/albums/create`);
-		},
-	},
+  name: 'Reciter-Profile',
+  components: {
+    HeroBanner,
+    TrackCard,
+    ReciterCard,
+    Album,
+  },
+  async beforeRouteEnter(to, from, next) {
+    await fetchData(to.params.reciter);
+    next();
+  },
+  async beforeRouteUpdate(to, from, next) {
+    await fetchData(to.params.reciter);
+    next();
+  },
+  computed: {
+    ...mapGetters({
+      reciter: 'reciters/reciter',
+      albums: 'albums/albums',
+      popularTracks: 'popular/popularTracks',
+    }),
+  },
+  methods: {
+    goToEditReciter() {
+      this.$router.push(`/reciters/${this.reciter.slug}/update`);
+    },
+    createAlbum() {
+      this.$router.push(`/reciters/${this.reciter.slug}/albums/create`);
+    },
+  },
 };
 </script>
 

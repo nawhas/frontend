@@ -9,7 +9,7 @@ export default {
   name: 'upload-button',
   props: {
     selectedCallback: Function,
-    title: String
+    title: String,
   },
   methods: {
     fileSelected(e) {
@@ -20,8 +20,8 @@ export default {
           this.selectedCallback(null);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

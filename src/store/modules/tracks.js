@@ -1,17 +1,13 @@
-import client from "../../services/client.js";
+import client from '../../services/client.js';
 
 const state = {
   tracks: null,
-  track: null
+  track: null,
 };
 
 const getters = {
-  tracks: state => {
-    return state.tracks;
-  },
-  track: state => {
-    return state.track;
-  },
+  tracks: state => state.tracks,
+  track: state => state.track,
 };
 
 const mutations = {
@@ -26,34 +22,34 @@ const mutations = {
   },
   UPDATE_TRACK(state, payload) {
     state.track = payload.data;
-  }
+  },
 };
 
 const actions = {
-  async fetchTracks({commit}, payload) {
+  async fetchTracks({ commit }, payload) {
     const response = await client.get(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks`);
     commit('FETCH_TRACKS', {
-      data: response.data.data
+      data: response.data.data,
     });
   },
-  async fetchTrack({commit}, payload) {
+  async fetchTrack({ commit }, payload) {
     const response = await client.get(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`);
     commit('FETCH_TRACK', {
-      data: response.data
+      data: response.data,
     });
   },
-  async storeTrack({commit}, payload) {
+  async storeTrack({ commit }, payload) {
     const response = await client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks`, payload.form);
     commit('STORE_TRACK', {
-      data: response.data
+      data: response.data,
     });
   },
-  async updateTrack({commit}, payload) {
+  async updateTrack({ commit }, payload) {
     const response = await client.post(`/v1/reciters/${payload.reciter}/albums/${payload.album}/tracks/${payload.track}`, payload.form);
     commit('UPDATE_TRACK', {
-      data: response.data
+      data: response.data,
     });
-  }
+  },
 };
 
 export default {
@@ -61,5 +57,5 @@ export default {
   mutations,
   actions,
   getters,
-  namespaced: true
+  namespaced: true,
 };

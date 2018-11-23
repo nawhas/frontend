@@ -58,7 +58,7 @@ export default {
     gradient() {
       const rgb = Vibrant.Util.hexToRgb(this.background);
       return `linear-gradient(to right, rgba(${rgb.join(', ')}, 1), rgba(${rgb.join(', ')}, 0)`;
-    }
+    },
   },
 };
 </script>

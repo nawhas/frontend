@@ -1,13 +1,11 @@
-import client from "@/services/client.js";
+import client from '@/services/client.js';
 
 const state = {
-  languages: null
+  languages: null,
 };
 
 const getters = {
-  languages: state => {
-    return state.languages;
-  },
+  languages: state => state.languages,
 };
 
 const mutations = {
@@ -17,10 +15,10 @@ const mutations = {
 };
 
 const actions = {
-  async fetchLanguages({commit}) {
+  async fetchLanguages({ commit }) {
     const response = await client.get('/v1/languages');
     commit('FETCH_LANGUAGES', {
-      data: response.data.data
+      data: response.data.data,
     });
   },
 };
@@ -30,5 +28,5 @@ export default {
   mutations,
   actions,
   getters,
-  namespaced: true
+  namespaced: true,
 };
