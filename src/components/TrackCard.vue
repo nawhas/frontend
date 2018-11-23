@@ -23,7 +23,7 @@ import Vibrant from 'node-vibrant';
 
 export default {
   name: 'track-card',
-  props: ['name', 'slug', 'album', 'reciter', 'slug', 'showReciter'],
+  props: ['name', 'slug', 'album', 'reciter', 'showReciter'],
   mounted() {
     this.setBackgroundFromImage();
   },
@@ -58,7 +58,7 @@ export default {
     gradient() {
       const rgb = Vibrant.Util.hexToRgb(this.background);
       return `linear-gradient(to right, rgba(${rgb.join(', ')}, 1), rgba(${rgb.join(', ')}, 0)`;
-    }
+    },
   },
 };
 </script>

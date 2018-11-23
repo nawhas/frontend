@@ -19,16 +19,16 @@ export default [
         title: 'Topics',
         exact: false,
         to: '/topics',
-        role: 'admin'
+        role: 'admin',
       },
       {
         icon: 'library_books',
         title: 'My Library',
         exact: false,
         to: '/library',
-        role: 'admin'
-      }
-    ]
+        role: 'admin',
+      },
+    ],
   },
   {
     group: 'trending',
@@ -38,23 +38,23 @@ export default [
         title: 'Top Charts',
         exact: true,
         to: '/charts',
-        role: 'admin'
+        role: 'admin',
       },
       {
         icon: 'whatshot',
         title: 'Trending',
         exact: false,
         to: '/trending',
-        role: 'admin'
+        role: 'admin',
       },
       {
         icon: 'date_range',
         title: 'New Releases',
         exact: false,
         to: '/new-releases',
-        role: 'admin'
-      }
-    ]
+        role: 'admin',
+      },
+    ],
   },
   {
     group: 'manage',
@@ -72,7 +72,7 @@ export default [
         exact: false,
         to: '/settings',
         role: 'admin',
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];

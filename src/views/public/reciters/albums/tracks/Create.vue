@@ -10,48 +10,48 @@
         <v-layout row>
           <v-flex>
             <v-text-field
-                label="Track Name"
-                v-model="track.name"
-                required />
+              label="Track Name"
+              v-model="track.name"
+              required />
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex>
             <v-text-field
-                label="Track Number"
-                v-model="track.trackNumber"
-                required />
+              label="Track Number"
+              v-model="track.number"
+              required />
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex>
             <v-select
-                v-model="track.language"
-                :items="languages"
-                item-text="name"
-                item-value="slug"
-                label="Select Nawha Language"
-                multiple
-                persistent-hint
-                return-object
-                single-line
-                required />
+              v-model="track.language"
+              :items="languages"
+              item-text="name"
+              item-value="slug"
+              label="Select Nawha Language"
+              multiple
+              persistent-hint
+              return-object
+              single-line
+              required />
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex>
             Audio File
             <input
-                type="file"
-                @change="onFileChange"
-                name="audio" />
+              type="file"
+              @change="onFileChange"
+              name="audio" />
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex>
             <v-text-field
-                label="YouTube Link To Video"
-                v-model="track.video" />
+              label="YouTube Link To Video"
+              v-model="track.video" />
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -65,58 +65,64 @@
 </template>
 
 <script>
-import client from '@/services/client';
+import { mapGetters } from 'vuex';
+import store from '@/store';
+
+async function fetchData(reciter, album) {
+  await Promise.all([
+    store.dispatch('reciters/fetchReciter', { reciter }),
+    store.dispatch('albums/fetchAlbum', { reciter, album }),
+    store.dispatch('languages/fetchLanguages'),
+  ]);
+}
 
 export default {
   name: 'Reciter-Create',
   methods: {
-    uploadForm() {
+    async uploadForm() {
       const form = new FormData();
       form.append('audio', this.track.audio);
       form.append('video', this.track.video);
       form.append('name', this.track.name);
-      form.append('trackNumber', this.track.trackNumber);
+      form.append('number', this.track.number);
+      const languages = [];
       for (const language of this.track.language) {
-        form.append('language[]', language.slug);
+        languages.push(language.slug);
       }
-      client.post(`/api/reciters/${this.reciter.slug}/albums/${this.album.year}/tracks`, form)
-        .then(() => {
-          this.$router.push(`/reciters/${this.reciter.slug}`);
-        });
+      form.append('language', languages);
+      await store.dispatch('tracks/storeTrack', { reciter: this.reciter.slug, album: this.album.year, form });
+      this.$router.push(`/reciters/${this.reciter.slug}`);
     },
     onFileChange(e) {
       if (e.target.name === 'audio') {
-        this.track.audio = e.target.files[0];
+        [this.track.audio] = e.target.files;
       } else if (e.target.name === 'video') {
-        this.track.video = e.target.files[0];
+        [this.track.video] = e.target.files;
       }
     },
-
-    setData(data) {
-      this.album.id = data.id;
-      this.album.name = data.name;
-      this.album.artwork = data.artwork;
-      this.album.year = data.year;
-      this.reciter = data.reciter;
-    },
+  },
+  computed: {
+    ...mapGetters({
+      reciter: 'reciters/reciter',
+      album: 'albums/album',
+      computedTrack: 'tracks/track',
+      languages: 'languages/languages',
+    }),
   },
   data() {
     return {
-      reciter: {},
-      album: { id: null, name: null, artwork: null, year: null, updatedArtwork: null },
-      track: { name: null, video: null, audio: null, trackNumber: null, language: null },
-      languages: [],
+      track: {
+        name: null, video: null, audio: null, number: null, language: null,
+      },
     };
   },
-  created() {
-    client.get(`/api/reciters/${this.$route.params.reciter}/albums/${this.$route.params.album}`)
-      .then((response) => {
-        this.setData(response.data);
-      });
-    client.get('/api/languages')
-      .then((response) => {
-        this.languages = response.data.data;
-      });
-  }
+  async beforeRouteEnter(to, from, next) {
+    await fetchData(to.params.reciter, to.params.album);
+    next();
+  },
+  async beforeRouteUpdate(to, from, next) {
+    await fetchData(to.params.reciter, to.params.album);
+    next();
+  },
 };
 </script>

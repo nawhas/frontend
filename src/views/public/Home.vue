@@ -9,7 +9,7 @@
       <h5 class="title">Top Reciters</h5>
       <v-container grid-list-lg class="pa-0" fluid>
         <v-layout row wrap>
-          <v-flex xs12 sm6 md4 v-for="reciter in reciters" :key="reciter.id">
+          <v-flex xs12 sm6 md4 v-for="reciter in popularReciters" :key="reciter.id">
             <reciter-card featured v-bind="reciter" />
           </v-flex>
         </v-layout>
@@ -19,7 +19,7 @@
       <h5 class="title">Trending Nawhas</h5>
       <v-container grid-list-lg class="pa-0" fluid>
         <v-layout row wrap>
-          <v-flex xs12 sm6 md4 v-for="track in tracks" v-bind:key="track.id">
+          <v-flex xs12 sm6 md4 v-for="track in popularTracks" v-bind:key="track.id">
             <track-card v-bind="track" :show-reciter="true" />
           </v-flex>
         </v-layout>
@@ -28,13 +28,20 @@
   </div>
 </template>
 
-<script>
-import {getTopReciters, getTopTracks} from '../../services/popular';
-import HeroBanner from '../../components/HeroBanner';
-import HeroQuote from '../../components/HeroQuote';
-import ReciterCard from '../../components/ReciterCard';
-import TrackCard from '../../components/TrackCard';
+<script lang="ts">
+import HeroBanner from '@/components/HeroBanner.vue';
+import HeroQuote from '@/components/HeroQuote.vue';
+import ReciterCard from '@/components/ReciterCard.vue';
+import TrackCard from '@/components/TrackCard.vue';
+import { mapGetters } from 'vuex';
+import store from '@/store';
 
+async function fetchData() {
+  await Promise.all([
+    store.dispatch('popular/fetchPopularReciters', { limit: 6 }),
+    store.dispatch('popular/fetchPopularTracks', { limit: 6 }),
+  ]);
+}
 export default {
   name: 'Home',
   components: {
@@ -43,30 +50,19 @@ export default {
     ReciterCard,
     TrackCard,
   },
-  methods: {
-    setData({reciters, tracks}) {
-      this.reciters = reciters;
-      this.tracks = tracks;
-    },
+  async beforeRouteEnter(to, from, next) {
+    await fetchData();
+    next();
   },
-  beforeRouteEnter(to, from, next) {
-    Promise.all([
-      getTopReciters({limit: 6}),
-      getTopTracks({limit: 6}),
-    ]).then((responses) => {
-      const [reciters, tracks] = responses;
-
-      next((vm) => vm.setData({
-        reciters: reciters.data.data,
-        tracks: tracks.data.data,
-      }));
-    });
+  async beforeRouteUpdate(to, from, next) {
+    await fetchData();
+    next();
   },
-  data() {
-    return {
-      reciters: [],
-      tracks: [],
-    };
+  computed: {
+    ...mapGetters({
+      popularReciters: 'popular/popularReciters',
+      popularTracks: 'popular/popularTracks',
+    }),
   },
 };
 </script>

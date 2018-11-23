@@ -40,36 +40,28 @@
               <v-btn v-if="isAdmin"
                 @click="goToAddTracks"
               >Add Lyric</v-btn>
-              <div class="lyrics__content" v-if="track.lyric">
-                <v-tabs centered>
-                  <v-tabs-bar class="white" dark>
-                    <v-tabs-slider class="red"></v-tabs-slider>
-                    <v-tabs-item
-                      v-for="i in track.lyric"
-                      :key="i.id"
-                      :href="'#tab-' + i.id"
-                    >
-                      {{ i.title }}
-                    </v-tabs-item>
-                  </v-tabs-bar>
-                  <v-tabs-items>
-                    <v-tabs-content
-                      v-for="i in track.lyric"
-                      :key="i.id"
-                      :id="'tab-' + i.id"
-                    >
-                      <v-card flat>
-                        <v-card-text>
-                          <!-- v-if="this.$store.getters['auth/isAdmin']" -->
-                          <v-btn v-if="isAdmin"
-                            @click="goToEditLyric(i)">
-                            Edit Lyrics
-                          </v-btn>
-                          <p v-html="i.text"></p>
-                        </v-card-text>
-                      </v-card>
-                    </v-tabs-content>
-                  </v-tabs-items>
+              <div class="lyrics__content" v-if="track.lyric.data.length != 0">
+                <v-tabs
+                  v-model="active"
+                  class="white" dark>
+                  <v-tab
+                    v-for="n in track.lyric.data"
+                    :key="n.id"
+                    ripple
+                  >
+                    {{ n.title }}
+
+                  </v-tab>
+                  <v-tab-item
+                    v-for="n in track.lyric.data"
+                    :key="n.id"
+                  >
+                    <v-card flat>
+                      <v-card-text>
+                        <p v-html="n.text"></p>
+                      </v-card-text>
+                    </v-card>
+                  </v-tab-item>
                 </v-tabs>
               </div>
               <div class="lyrics__empty" v-else>
@@ -114,130 +106,101 @@
 </template>
 
 <script>
-  import Aplayer from 'vue-aplayer';
-  import Vibrant from 'node-vibrant';
-  import {getTrack} from '../../../services/tracks';
-  import HeroBanner from '../../../components/HeroBanner';
-  import ReciterCard from '../../../components/ReciterCard';
-  import TrackCard from '../../../components/TrackCard';
-  import Album from '../../../components/Album';
+import { mapGetters } from 'vuex';
+import Aplayer from 'vue-aplayer';
+import Vibrant from 'node-vibrant';
+import store from '@/store';
 
-  export default {
-    name: 'TrackPage',
-    components: {
-      HeroBanner,
-      TrackCard,
-      ReciterCard,
-      Album,
-      Aplayer
+async function fetchData(reciter, album, track) {
+  await Promise.all([
+    store.dispatch('tracks/fetchTrack', { reciter, album, track }),
+  ]);
+}
+
+export default {
+  name: 'TrackPage',
+  components: {
+    Aplayer,
+  },
+  data() {
+    return {
+      background: '#222',
+      textColor: '#fff',
+      videoId: null,
+      startTime: null,
+      active: null,
+      text: null,
+    };
+  },
+  computed: {
+    ...mapGetters({
+      track: 'tracks/track',
+    }),
+    isAdmin() {
+      return this.$store.getters['auth/isAdmin'];
     },
-    data() {
-      return {
-        track: {
-          album: null,
-          audio: null,
-          created_at: null,
-          id: null,
-          language: null,
-          links: null,
-          lyric: null,
-          name: null,
-          number: null,
-          reciter: null,
-          slug: null,
-          updated_at: null,
-          video: null,
+  },
+  created() {
+    if (this.track.video) {
+      this.videoId = this.$youtube.getIdFromURL(this.track.video);
+      this.startTime = this.$youtube.getTimeFromURL(this.track.video);
+    } else {
+      this.videoId = null;
+      this.startTime = null;
+    }
+    this.setBackgroundFromImage();
+  },
+  methods: {
+    goToAddTracks() {
+      const reciter = this.track.reciter.slug;
+      const { year } = this.track.album;
+      const track = this.track.slug;
+      this.$router.push(`/reciters/${reciter}/albums/${year}/tracks/${track}/lyrics/create`);
+    },
+    goToEditTrack() {
+      this.$router.push({
+        name: 'Track-Update',
+        params: {
+          reciter: this.track.reciter.slug,
+          album: this.track.album.year,
+          track: this.track.slug,
         },
-        background: '#222',
-        textColor: '#fff',
-        videoId: '',
-        startTime: '',
-        active: null,
-        text: null
-      };
+      });
     },
-    computed: {
-      isAdmin() {
-        return this.$store.getters['auth/isAdmin'];
+    goToEditLyric(lyric) {
+      this.$router.push({
+        name: 'Lyric-Update',
+        params: {
+          reciter: this.track.reciter.slug,
+          album: this.track.album.year,
+          track: this.track.slug,
+          lyric: lyric.id,
+        },
+      });
+    },
+    setBackgroundFromImage() {
+      if (!this.track) {
+        return;
       }
-    },
-    methods: {
-      goToAddTracks() {
-        const reciter = this.track.reciter.slug;
-        const year = this.track.album.year;
-        const track = this.track.slug;
-        this.$router.push(`/reciters/${reciter}/albums/${year}/tracks/${track}/lyrics/create`);
-      },
-      goToEditTrack() {
-        this.$router.push({
-          name: 'Track-Update',
-          params: {
-            reciter: this.track.reciter.slug,
-            album: this.track.album.year,
-            track: this.track.slug
-          },
-        });
-      },
-      goToEditLyric(lyric) {
-        this.$router.push({ name: 'Lyric-Update',
-          params: {
-            reciter: this.track.reciter.slug,
-            album: this.track.album.year,
-            track: this.track.slug,
-            lyric: lyric.id
-          }
-        });
-      },
-      setTrack(track) {
-        this.track.album = track.album;
-        this.track.audio = track.audio;
-        this.track.created_at = track.created_at;
-        this.track.id = track.id;
-        this.track.language = track.language.data;
-        this.track.links = track.links;
-        this.track.lyric = track.lyric.data;
-        this.track.name = track.name;
-        this.track.number = track.number;
-        this.track.reciter = track.reciter;
-        this.track.slug = track.slug;
-        this.track.updated_at = track.updated_at;
-        this.track.video = track.video;
-        if (track.video) {
-          this.videoId = this.$youtube.getIdFromURL(track.video);
-          this.startTime = this.$youtube.getTimeFromURL(track.video);
-        } else {
-          this.videoId = null;
-          this.startTime = null;
-        }
-        this.setBackgroundFromImage();
-      },
-      setBackgroundFromImage() {
-        if (!this.track) {
+      Vibrant.from(this.track.album.artwork).getPalette().then((palette) => {
+        const swatch = palette.DarkMuted;
+        if (!swatch) {
           return;
         }
-        Vibrant.from(this.track.album.artwork).getPalette().then((palette) => {
-          const swatch = palette.DarkMuted;
-          if (!swatch) {
-            return;
-          }
-          this.background = swatch.getHex();
-          this.textColor = swatch.getBodyTextColor();
-        });
-      },
-    },
-    beforeRouteEnter(to, from, next) {
-      getTrack(to.params.reciter, to.params.album, to.params.track).then((response) => {
-        next((vm) => vm.setTrack(response.data));
+        this.background = swatch.getHex();
+        this.textColor = swatch.getBodyTextColor();
       });
     },
-    beforeRouteUpdate(to, from, next) {
-      this.setTrack(null);
-      getTrack(to.params.reciter, to.params.album, to.params.track).then((response) => {
-        this.setTrack(response.data);
-        next();
-      });
-    },
-  };
+  },
+  async beforeRouteEnter(to, from, next) {
+    await fetchData(to.params.reciter, to.params.album, to.params.track);
+    next();
+  },
+  async beforeRouteUpdate(to, from, next) {
+    await fetchData(to.params.reciter, to.params.album, to.params.track);
+    next();
+  },
+};
 </script>
 
 <style lang="stylus" scoped>

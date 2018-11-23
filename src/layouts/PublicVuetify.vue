@@ -28,11 +28,20 @@
     <v-toolbar color="white" app fixed clipped-left flat>
       <v-toolbar-side-icon @click.native="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown" />
       <span class="title mr-5">
-        <img class="masthead__logo masthead__logo--desktop" src="../assets/logo.svg" :height="$vuetify.breakpoint.smAndDown ? 32 : 38"
+        <img class="masthead__logo masthead__logo--desktop" src="../assets/logo.svg"
+             :height="$vuetify.breakpoint.smAndDown ? 32 : 38"
              onerror="this.src='../assets/logo.png'" alt="Nawhas.com">
       </span>
       <v-spacer></v-spacer>
-      <v-btn icon to="/auth/redirect"><v-icon>account_circle</v-icon></v-btn>
+      <template v-if="$store.getters['auth/authenticated']">
+        <v-btn icon @click="$store.dispatch('auth/logout')">logout</v-btn>
+        <v-btn icon to="/auth/redirect">
+          <v-icon>account_circle</v-icon>
+        </v-btn>
+      </template>
+      <template v-else>
+        <v-btn>Login</v-btn>
+      </template>
     </v-toolbar>
     <v-content>
       <v-container fluid class="grey lighten-5 main-container">
@@ -43,12 +52,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import navItems from '@/data/navigation';
 
 @Component
 export default class PublicVuetify extends Vue {
   private items = navItems;
+
   private drawer: boolean | null = null;
 
   get navigation() {
@@ -84,6 +94,7 @@ export default class PublicVuetify extends Vue {
 .nav__tile__action {
   justify-content: center;
 }
+
 .nav__tile--active {
   .nav__tile__action {
     color: var(--v-primary-base);

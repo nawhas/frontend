@@ -10,28 +10,27 @@
         <v-layout row>
           <v-flex>
             <v-text-field
-                label="Reciter Name"
-                v-model="reciter.name"
-                required
+              label="Reciter Name"
+              v-model="reciter.name"
+              required
             ></v-text-field>
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex>
-            <v-text-field
-                label="Reciter description"
-                v-model="reciter.description"
-                multi-line
-            ></v-text-field>
+            <v-textarea
+              label="Reciter description"
+              v-model="reciter.description"
+            ></v-textarea>
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex>
             <input
-                type="file"
-                @change="onFileChange"
+              type="file"
+              @change="onFileChange"
             >
-            <img v-if="!this.reciter.updatedAvatar" :src="this.reciter.avatar" height="100" width="100">
+            <img v-if="!this.updatedAvatar" :src="this.reciter.avatar" height="100" width="100">
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -45,43 +44,53 @@
 </template>
 
 <script>
-import client from '@/services/client';
-import { getReciter } from '../../../services/reciters';
+import { mapGetters } from 'vuex';
+import store from '@/store';
+
+async function fetchData(reciter) {
+  await Promise.all([
+    store.dispatch('reciters/fetchReciter', { reciter }),
+  ]);
+}
 
 export default {
   name: 'Reciter-Create',
   methods: {
-    uploadForm() {
+    async uploadForm() {
       const form = new FormData();
       form.append('name', this.reciter.name);
       form.append('avatar', this.reciter.avatar);
-      if (this.reciter.updatedAvatar) {
-        form.append('updatedAvatar', this.reciter.updatedAvatar);
+      if (this.updatedAvatar) {
+        form.append('updatedAvatar', this.updatedAvatar);
       }
       form.append('description', this.reciter.description);
-      client.post(`/api/reciters/${this.reciter.slug}`, form).then(() => {
-        this.$router.push('/reciters');
+      await this.$store.dispatch('reciters/updateReciter', {
+        form,
+        reciter: this.reciter.slug,
       });
+      this.$router.push({ name: 'Reciters' });
     },
     onFileChange(e) {
-      this.reciter.updatedAvatar = e.target.files[0];
+      [this.updatedAvatar] = e.target.files;
     },
-    setData(reciter) {
-      this.reciter.name = reciter.name || null;
-      this.reciter.slug = reciter.slug || null;
-      this.reciter.description = reciter.description || null;
-      this.reciter.avatar = reciter.avatar || null;
-    }
+  },
+  computed: {
+    ...mapGetters({
+      reciter: 'reciters/reciter',
+    }),
   },
   data() {
     return {
-      reciter: { name: null, slug: null, avatar: null, description: null, updatedAvatar: null },
+      updatedAvatar: null,
     };
   },
-  created() {
-    getReciter(this.$route.params.reciter).then((response) => {
-      this.setData(response.data);
-    });
-  }
+  async beforeRouteEnter(to, from, next) {
+    await fetchData(to.params.reciter);
+    next();
+  },
+  async beforeRouteUpdate(to, from, next) {
+    await fetchData(to.params.reciter);
+    next();
+  },
 };
 </script>

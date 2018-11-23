@@ -13,17 +13,18 @@
             {{ reciter.name }}
           </h4>
           <!--<ul class="reciter-hero__social">-->
-            <!--<li><a href=""><i class="fa fa-globe"></i></a></li>-->
-            <!--<li><a href=""><i class="fa fa-facebook"></i></a></li>-->
-            <!--<li><a href=""><i class="fa fa-youtube-play"></i></a></li>-->
-            <!--<li><a href=""><i class="fa fa-twitter"></i></a></li>-->
-            <!--<li><a href=""><i class="fa fa-instagram"></i></a></li>-->
+          <!--<li><a href=""><i class="fa fa-globe"></i></a></li>-->
+          <!--<li><a href=""><i class="fa fa-facebook"></i></a></li>-->
+          <!--<li><a href=""><i class="fa fa-youtube-play"></i></a></li>-->
+          <!--<li><a href=""><i class="fa fa-twitter"></i></a></li>-->
+          <!--<li><a href=""><i class="fa fa-instagram"></i></a></li>-->
           <!--</ul>-->
           <p class="reciter-hero__bio">{{ reciter.description }}</p>
           <v-btn
-            v-if="this.$store.getters['auth/isAdmin']"
-            @click="goToEditReciter"
-          >Update Reciter</v-btn>
+              v-if="this.$store.getters['auth/isAdmin']"
+              @click="goToEditReciter"
+          >Update Reciter
+          </v-btn>
         </v-card>
       </div>
     </div>
@@ -31,8 +32,8 @@
       <h5>Top Nawhas</h5>
       <v-container grid-list-lg class="pa-0" fluid>
         <v-layout row wrap>
-          <v-flex xs12 sm6 md4 v-for="track in tracks" v-bind:key="track.id">
-            <track-card v-bind="track" :show-reciter="false" />
+          <v-flex xs12 sm6 md4 v-for="track in popularTracks" v-bind:key="track.id">
+            <track-card v-bind="track" :show-reciter="false"></track-card>
           </v-flex>
         </v-layout>
       </v-container>
@@ -47,69 +48,50 @@
   </div>
 </template>
 
-<script>
-import {getReciter} from '../../../services/reciters';
-import {getTopTracks} from '../../../services/popular';
-import {getAlbums} from '../../../services/albums';
-import HeroBanner from '../../../components/HeroBanner';
-import ReciterCard from '../../../components/ReciterCard';
-import TrackCard from '../../../components/TrackCard';
-import Album from '../../../components/Album';
+<script lang="ts">
+import { mapGetters } from 'vuex';
+import HeroBanner from '@/components/HeroBanner.vue';
+import ReciterCard from '@/components/ReciterCard.vue';
+import TrackCard from '@/components/TrackCard.vue';
+import Album from '@//components/Album.vue';
+import store from '@/store';
 
-function fetchData(reciterId) {
-  return new Promise((resolve) => {
-    getReciter(reciterId).then((response) => {
-      const reciter = response.data;
-
-      Promise.all([
-        getTopTracks({limit: 6, reciterId: reciter.id}),
-        getAlbums(reciter.id),
-      ]).then(([tracks, albums]) => {
-        resolve({reciter, tracks: tracks.data.data, albums: albums.data.data});
-      });
-    });
-  });
+async function fetchData(reciter) {
+  await Promise.all([
+    store.dispatch('albums/fetchAlbums', { reciter }),
+    store.dispatch('reciters/fetchReciter', { reciter }),
+  ]);
+  await store.dispatch('popular/fetchPopularTracks', { limit: 6, reciterId: store.getters['reciters/reciter'].id });
 }
 
 export default {
   name: 'Reciter-Profile',
   components: {
-    HeroBanner,
     TrackCard,
-    ReciterCard,
     Album,
   },
-  data() {
-    return {
-      reciter: {},
-      tracks: [],
-      albums: [],
-    };
+  async beforeRouteEnter(to, from, next) {
+    await fetchData(to.params.reciter);
+    next();
+  },
+  async beforeRouteUpdate(to, from, next) {
+    await fetchData(to.params.reciter);
+    next();
+  },
+  computed: {
+    ...mapGetters({
+      reciter: 'reciters/reciter',
+      albums: 'albums/albums',
+      popularTracks: 'popular/popularTracks',
+    }),
   },
   methods: {
-    setData({reciter, tracks, albums}) {
-      this.reciter = reciter || null;
-      this.tracks = tracks || [];
-      this.albums = albums || [];
-    },
     goToEditReciter() {
       this.$router.push(`/reciters/${this.reciter.slug}/update`);
     },
     createAlbum() {
       this.$router.push(`/reciters/${this.reciter.slug}/albums/create`);
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    fetchData(to.params.reciter).then((data) => {
-      next((vm) => vm.setData(data));
-    });
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.setData({});
-    fetchData(to.params.reciter).then((data) => {
-      this.setData(data);
-      next();
-    });
   },
 };
 </script>

@@ -12,7 +12,9 @@
     </section>
     <section class="page-section" id="all-reciters-section">
       <h5>All Reciters</h5>
-      <v-btn primary flat v-if="this.$store.getters['auth/isAdmin']" @click="createNewReciter">Create New Reciter</v-btn>
+      <v-btn primary flat v-if="this.$store.getters['auth/isAdmin']" @click="createNewReciter">
+        Create New Reciter
+      </v-btn>
       <v-card>
         <v-container class="pa-0" fluid>
           <v-layout row wrap>
@@ -26,10 +28,17 @@
   </div>
 </template>
 
-<script>
-import {getTopReciters} from '../../../services/popular';
-import {getReciters} from '../../../services/reciters';
-import ReciterCard from '../../../components/ReciterCard';
+<script lang="ts">
+import { mapGetters } from 'vuex';
+import ReciterCard from '@/components/ReciterCard.vue';
+import store from '@/store';
+
+async function fetchData() {
+  await Promise.all([
+    store.dispatch('reciters/fetchReciters'),
+    store.dispatch('popular/fetchPopularReciters', { limit: 6 }),
+  ]);
+}
 
 export default {
   name: 'Reciters',
@@ -37,32 +46,23 @@ export default {
     ReciterCard,
   },
   methods: {
-    setData({reciters, popularReciters}) {
-      this.reciters = reciters;
-      this.popularReciters = popularReciters;
-    },
     createNewReciter() {
       this.$router.push('/reciters/create');
     },
   },
-  beforeRouteEnter(to, from, next) {
-    Promise.all([
-      getReciters(),
-      getTopReciters({limit: 6}),
-    ]).then((responses) => {
-      const [reciters, popularReciters] = responses;
-
-      next((vm) => vm.setData({
-        reciters: reciters.data.data,
-        popularReciters: popularReciters.data.data,
-      }));
-    });
+  computed: {
+    ...mapGetters({
+      reciters: 'reciters/reciters',
+      popularReciters: 'popular/popularReciters',
+    }),
   },
-  data() {
-    return {
-      reciters: [],
-      popularReciters: [],
-    };
+  async beforeRouteEnter(to, from, next) {
+    await fetchData();
+    next();
+  },
+  async beforeRouteUpdate(to, from, next) {
+    await fetchData();
+    next();
   },
 };
 </script>

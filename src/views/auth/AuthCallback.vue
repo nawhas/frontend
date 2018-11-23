@@ -12,7 +12,7 @@ export default {
   name: 'auth-callback',
   created() {
     this.$store.dispatch('auth/login');
-  }
+  },
 };
 </script>
 

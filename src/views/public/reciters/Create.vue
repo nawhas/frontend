@@ -10,17 +10,17 @@
         <v-layout row>
           <v-flex>
             <v-text-field
-                label="Reciter Name"
-                v-model="reciter.name"
-                required />
+              label="Reciter Name"
+              v-model="reciter.name"
+              required />
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex>
-            <v-text-field
-                label="Reciter description"
-                v-model="reciter.description"
-                multi-line />
+            <v-textarea
+              label="Reciter description"
+              v-model="reciter.description"
+            ></v-textarea>
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -39,22 +39,19 @@
 </template>
 
 <script>
-import client from '@/services/client';
-
 export default {
   name: 'Reciter-Create',
   methods: {
-    uploadForm() {
+    async uploadForm() {
       const form = new FormData();
       form.append('name', this.reciter.name);
       form.append('avatar', this.reciter.avatar);
       form.append('description', this.reciter.description);
-      client.post('/api/reciters', form).then(() => {
-        this.$router.push('/reciters');
-      });
+      await this.$store.dispatch('reciters/storeReciter', { form });
+      this.$router.push({ name: 'Reciters' });
     },
     onFileChange(e) {
-      this.reciter.avatar = e.target.files[0];
+      [this.reciter.avatar] = e.target.files;
     },
   },
   data() {
