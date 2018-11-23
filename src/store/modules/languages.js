@@ -5,7 +5,7 @@ const state = {
 };
 
 const getters = {
-  languages: state => state.languages,
+  languages: (state) => state.languages,
 };
 
 const mutations = {

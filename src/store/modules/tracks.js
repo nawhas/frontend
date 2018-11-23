@@ -6,8 +6,8 @@ const state = {
 };
 
 const getters = {
-  tracks: state => state.tracks,
-  track: state => state.track,
+  tracks: (state) => state.tracks,
+  track: (state) => state.track,
 };
 
 const mutations = {

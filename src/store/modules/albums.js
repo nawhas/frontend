@@ -6,8 +6,8 @@ const state = {
 };
 
 const getters = {
-  albums: state => state.albums,
-  album: state => state.album,
+  albums: (state) => state.albums,
+  album: (state) => state.album,
 };
 
 const mutations = {

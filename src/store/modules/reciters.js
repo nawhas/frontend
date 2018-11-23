@@ -6,8 +6,8 @@ const state = {
 };
 
 const getters = {
-  reciters: state => state.reciters,
-  reciter: state => state.reciter,
+  reciters: (state) => state.reciters,
+  reciter: (state) => state.reciter,
 };
 
 const mutations = {

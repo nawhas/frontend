@@ -5,7 +5,7 @@ const state = {
 };
 
 const getters = {
-  lyric: state => state.lyric,
+  lyric: (state) => state.lyric,
 };
 
 const mutations = {

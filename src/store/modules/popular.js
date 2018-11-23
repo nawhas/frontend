@@ -7,9 +7,9 @@ const state = {
 };
 
 const getters = {
-  popularReciters: state => state.popularReciters,
-  popularAlbums: state => state.popularAlbums,
-  popularTracks: state => state.popularTracks,
+  popularReciters: (state) => state.popularReciters,
+  popularAlbums: (state) => state.popularAlbums,
+  popularTracks: (state) => state.popularTracks,
 };
 
 const mutations = {
