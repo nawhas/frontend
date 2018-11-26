@@ -26,9 +26,9 @@
     <v-data-table
         :headers="headers"
         :items="tracks.data"
-        hide-actions
-        class="album__tracks">
-      <template slot="items">
+        class="album__tracks"
+    >
+      <template slot="items" slot-scope="props">
         <tr @click="goToTrack(props.item)" class="album__track">
           <td class="text-xs-right">{{ props.item.number }}</td>
           <td>{{ props.item.name }}</td>
