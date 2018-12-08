@@ -40,7 +40,7 @@
         </v-btn>
       </template>
       <template v-else>
-        <v-btn>Login</v-btn>
+        <v-btn :to="'/auth/redirect'">Login</v-btn>
       </template>
     </v-toolbar>
     <v-content>
