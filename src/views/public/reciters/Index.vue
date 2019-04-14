@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="page-section" id="top-reciters-section">
-      <h5>Top Reciters</h5>
+      <h2>Top Reciters</h2>
       <v-container grid-list-lg class="pa-0" fluid>
         <v-layout row wrap>
           <v-flex xs12 sm6 md4 v-for="reciter in popularReciters" :key="reciter.id">
@@ -11,10 +11,10 @@
       </v-container>
     </section>
     <section class="page-section" id="all-reciters-section">
-      <h5>All Reciters</h5>
-      <v-btn primary flat v-if="this.$store.getters['auth/isAdmin']" @click="createNewReciter">
+      <v-btn color="primary" v-if="isAdmin" @click="createNewReciter">
         Create New Reciter
       </v-btn>
+      <h2>All Reciters</h2>
       <v-card>
         <v-container class="pa-0" fluid>
           <v-layout row wrap>
@@ -55,6 +55,9 @@ export default {
       reciters: 'reciters/reciters',
       popularReciters: 'popular/popularReciters',
     }),
+    isAdmin() {
+      return this.$store.getters['auth/isAdmin'];
+    }
   },
   async beforeRouteEnter(to, from, next) {
     await fetchData();

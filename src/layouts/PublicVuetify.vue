@@ -33,7 +33,7 @@
              onerror="this.src='../assets/logo.png'" alt="Nawhas.com">
       </span>
       <v-spacer></v-spacer>
-      <template v-if="$store.getters['auth/authenticated']">
+      <template v-if="isAuthenticated">
         <v-btn flat @click="$store.dispatch('auth/logout')">logout</v-btn>
         <v-btn icon to="/auth/redirect">
           <v-icon>account_circle</v-icon>
@@ -61,8 +61,11 @@ export default class PublicVuetify extends Vue {
 
   private drawer: boolean | null = null;
 
+  get isAuthenticated() {
+    return this.$store.getters['auth/authenticated'];
+  }
+
   get navigation() {
-    // return filtered nav list based on role
     const items: object[] = [];
     const role = this.$store.getters['auth/userRole'];
 
