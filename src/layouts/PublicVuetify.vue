@@ -61,6 +61,14 @@ export default class PublicVuetify extends Vue {
 
   private drawer: boolean | null = null;
 
+  mounted() {
+    if (this.$store.getters['auth/authenticated']) {
+      if (!this.$store.getters['auth/userRole']) {
+        this.$store.dispatch('auth/fetchUser');
+      }
+    }
+  }
+
   get isAuthenticated() {
     return this.$store.getters['auth/authenticated'];
   }

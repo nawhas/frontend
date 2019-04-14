@@ -29,7 +29,7 @@
       </div>
     </div>
     <section class="page-section" id="top-reciters-section">
-      <h5>Top Nawhas</h5>
+      <h2>Top Nawhas</h2>
       <v-container grid-list-lg class="pa-0" fluid>
         <v-layout row wrap>
           <v-flex xs12 sm6 md4 v-for="track in popularTracks" v-bind:key="track.id">
@@ -39,8 +39,8 @@
       </v-container>
     </section>
     <section class="page-section" id="all-reciters-section">
-      <h5>Albums</h5>
-      <v-btn primary flat v-if="this.$store.getters['auth/isAdmin']" @click="createAlbum">Create New Album</v-btn>
+      <v-btn color="primary" v-if="this.$store.getters['auth/isAdmin']" @click="createAlbum">Create New Album</v-btn>
+      <h2>Albums</h2>
       <template v-for="album in albums">
         <album v-bind="album" :reciterSlug="reciter.slug" v-bind:key="album.id"></album>
       </template>
