@@ -8,7 +8,7 @@
       </v-layout>
       <v-form enctype="multipart/form-data">
         <v-layout row>
-          <v-flex>
+          <v-flex xs12 sm6 offset-sm3 lg8 offset-lg2>
             <v-text-field
               label="Album Name"
               v-model="album.name"
@@ -16,7 +16,7 @@
           </v-flex>
         </v-layout>
         <v-layout row>
-          <v-flex>
+          <v-flex xs12 sm6 offset-sm3 lg8 offset-lg2>
             <v-text-field
               label="Album year"
               v-model="album.year"
@@ -24,15 +24,21 @@
           </v-flex>
         </v-layout>
         <v-layout row>
-          <v-flex>
+          <v-flex xs12 sm6 offset-sm3 lg8 offset-lg2>
             <input
               type="file"
-              @change="onFileChange" />
+              @change="onFileChange"
+              accept="image/*"/>
           </v-flex>
         </v-layout>
         <v-layout row>
-          <v-flex xs12 sm1 offset-sm11>
-            <v-btn primary @click="uploadForm">Submit</v-btn>
+          <v-flex xs12 sm6 offset-sm3 lg8 offset-lg2>
+            <img :src="album.artworkURL">
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex xs12 sm6 offset-sm3 lg8 offset-lg2>
+            <v-btn color="primary" @click="uploadForm">Submit</v-btn>
           </v-flex>
         </v-layout>
       </v-form>
@@ -50,7 +56,6 @@ async function fetchData(reciter) {
   ]);
 }
 
-
 export default {
   name: 'Album-Create',
   methods: {
@@ -64,6 +69,7 @@ export default {
     },
     onFileChange(e) {
       [this.album.artwork] = e.target.files;
+      this.album.artworkURL = URL.createObjectURL(this.album.artwork);
     },
   },
   computed: {
@@ -73,7 +79,7 @@ export default {
   },
   data() {
     return {
-      album: { name: null, artwork: null, year: null },
+      album: { name: null, artwork: null, artworkURL: null, year: null },
     };
   },
   async beforeRouteEnter(to, from, next) {
@@ -86,3 +92,10 @@ export default {
   },
 };
 </script>
+
+<style scoped="">
+img {
+  max-width: 100%;
+  max-height: 100px;
+}
+</style>
