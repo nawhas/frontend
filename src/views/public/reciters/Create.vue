@@ -12,7 +12,8 @@
             <v-text-field
               label="Reciter Name"
               v-model="reciter.name"
-              required />
+              name="reciter_name"
+              required ></v-text-field>
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -20,12 +21,13 @@
             <v-textarea
               label="Reciter description"
               v-model="reciter.description"
+              name="reciter_description"
             ></v-textarea>
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3 lg8 offset-lg2>
-            <input type="file" @change="onFileChange" accept="image/*">
+            <input name="reciter_avatar" type="file" @change="onFileChange" accept="image/*">
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -35,7 +37,7 @@
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3 lg8 offset-lg2>
-            <v-btn color="primary" @click="uploadForm">Submit</v-btn>
+            <v-btn color="primary" name="submit_reciter" @click="uploadForm">Submit</v-btn>
           </v-flex>
         </v-layout>
       </v-form>

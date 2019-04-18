@@ -12,7 +12,8 @@
             <v-text-field
               label="Album Name"
               v-model="album.name"
-              required />
+              name="album_name"
+              required ></v-text-field>
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -20,13 +21,15 @@
             <v-text-field
               label="Album year"
               v-model="album.year"
-              required />
+              name="album_year"
+              required ></v-text-field>
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3 lg8 offset-lg2>
             <input
               type="file"
+              name="album_artwork"
               @change="onFileChange"
               accept="image/*"/>
           </v-flex>
@@ -38,7 +41,7 @@
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3 lg8 offset-lg2>
-            <v-btn color="primary" @click="uploadForm">Submit</v-btn>
+            <v-btn color="primary" name="submit_album" @click="uploadForm">Submit</v-btn>
           </v-flex>
         </v-layout>
       </v-form>

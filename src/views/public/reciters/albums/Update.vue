@@ -12,6 +12,7 @@
             <v-text-field
               label="Album Name"
               v-model="album.name"
+              name="edit_album_name"
               required>
             </v-text-field>
           </v-flex>
@@ -20,6 +21,7 @@
           <v-flex>
             <input
               type="file"
+              name="edit_album_avatar"
               @change="onFileChange">
             <img v-if="!this.updatedArtwork" :src="this.album.artwork" :alt="this.album.name" width="100"
                  height="100">
@@ -27,7 +29,7 @@
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm1 offset-sm11>
-            <v-btn primary @click="uploadForm">Submit</v-btn>
+            <v-btn primary name="edit_submit_album" @click="uploadForm">Submit</v-btn>
           </v-flex>
         </v-layout>
       </v-form>

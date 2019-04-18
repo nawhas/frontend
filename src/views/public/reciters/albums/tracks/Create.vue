@@ -12,7 +12,8 @@
             <v-text-field
               label="Track Name"
               v-model="track.name"
-              required />
+              name="track_name"
+              required ></v-text-field>
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -20,7 +21,8 @@
             <v-text-field
               label="Track Number"
               v-model="track.number"
-              required />
+              name="track_number"
+              required ></v-text-field>
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -31,11 +33,12 @@
               item-text="name"
               item-value="slug"
               label="Select Nawha Language"
+              name="track_language"
               multiple
               persistent-hint
               return-object
               single-line
-              required />
+              required ></v-select>
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -43,6 +46,7 @@
             Audio File
             <input
               type="file"
+              name="track_file"
               @change="onFileChange"
               name="audio" />
           </v-flex>
@@ -51,12 +55,13 @@
           <v-flex>
             <v-text-field
               label="YouTube Link To Video"
-              v-model="track.video" />
+              name="track_youtube_link"
+              v-model="track.video" ></v-text-field>
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm1 offset-sm11>
-            <v-btn primary @click="uploadForm">Submit</v-btn>
+            <v-btn primary name="submit_track" @click="uploadForm">Submit</v-btn>
           </v-flex>
         </v-layout>
       </v-form>
