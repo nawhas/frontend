@@ -46,7 +46,7 @@ const actions = {
     });
   },
   logout({ commit }) {
-    client.post('logout').then(() => {
+    client.post('/v1/logout').then(() => {
       clearAccessToken();
       commit('LOGOUT');
       router.push('/');

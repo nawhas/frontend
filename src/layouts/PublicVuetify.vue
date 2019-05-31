@@ -34,13 +34,13 @@
       </span>
       <v-spacer></v-spacer>
       <template v-if="$store.getters['auth/authenticated']">
-        <v-btn icon @click="$store.dispatch('auth/logout')">logout</v-btn>
+        <v-btn flat @click="$store.dispatch('auth/logout')">logout</v-btn>
         <v-btn icon to="/auth/redirect">
           <v-icon>account_circle</v-icon>
         </v-btn>
       </template>
       <template v-else>
-        <v-btn>Login</v-btn>
+        <v-btn flat @click="$store.dispatch('auth/redirectToLogin')">Login</v-btn>
       </template>
     </v-toolbar>
     <v-content>
